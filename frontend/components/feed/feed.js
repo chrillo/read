@@ -10,11 +10,11 @@ const StyledList = styled.div`
 export class Feed extends PureComponent{
 
     render(){
-        const {items} = this.props
+        const {items, onRead} = this.props
 
         return (<StyledList>
             {items.map((item)=>{
-                return <FeedItem item={item} key={item.id} />
+                return <FeedItem onRead={onRead} item={item} key={item.id} />
             })}
         </StyledList>)
     }

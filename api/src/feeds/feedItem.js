@@ -5,7 +5,7 @@ const FeedItemSchema = Schema( {
     user: { type: Schema.Types.ObjectId, ref: 'User', index:true },
     contentItem: { type: Schema.Types.ObjectId, ref: 'ContentItem',index:true },
     contentSource:{ type: Schema.Types.ObjectId, ref: 'ContentSource',index:true },
-    read: {type:Boolean, index:true},
+    read: {type:Boolean, index:true, default:false},
     createdAt:{type: Date, default: Date.now},
     updatedAt:{type: Date, default: Date.now}
 })

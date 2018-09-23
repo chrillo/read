@@ -33,7 +33,7 @@ export const removeSourceFromFeed = async({user, userId, contentSourceId}={})=>{
 
 export const getFeedForUser = async({user, limit=10, skip=0}={})=>{
     if(!user) throw new ApiError(ERRORS.NOT_AUTHORIZED)
-    return await FeedItem.find().where({user: user.id || user._id}).populate('contentItem').sort('-_id').limit(limit).skip(skip)
+    return await FeedItem.find().where({user: user.id || user._id, read:false}).populate('contentItem').sort('-_id').limit(limit).skip(skip)
 }
 export const getFeedItemForUser = async({user, feedItemId})=>{
     if(!user) throw new ApiError(ERRORS.NOT_AUTHORIZED)
@@ -47,7 +47,8 @@ export const getFeedItemForUser = async({user, feedItemId})=>{
 export const markFeedItemsAsRead = async({user, feedItemIds})=>{
     if(!user) throw new ApiError(ERRORS.NOT_AUTHORIZED)
 
-    await FeedItem.updateMany({_id:{$in:feedItemIds}},{read:true})
+    let res = await FeedItem.updateMany({_id:{$in:feedItemIds}},{read:true})
+
     return feedItemIds.map((id)=>{
         return {id,read:true}
     })

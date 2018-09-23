@@ -15,13 +15,14 @@ const getBase =(ctx)=>{
     return base
 }
 
-export const markAsRead = async({contentItemIds})=>{
+export const markAsRead = async({feedItemIds})=>{
     const data = await getGraphQLQuery(`mutation{
-        markAsRead(contenItemIds:["${contentItemIds.join('","')}"]){
+        markAsRead(feedItemIds:["${feedItemIds.join('","')}"]){
             id,
             read
         }
     }`)
+    console.log('marked as read', data)
 }
 
 export const login = async({email, password})=>{

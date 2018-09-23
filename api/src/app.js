@@ -12,6 +12,7 @@ import { initJobs, JOBS } from './lib/jobs';
 import {initGraphQl} from './graphql/graphqlApi'
 import jwt from 'express-jwt';
 import { log } from './lib/log';
+import { FeedItem } from './feeds/feedItem';
 
 
 const CONFIG = process.env
