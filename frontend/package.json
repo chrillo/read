@@ -1,0 +1,30 @@
+{
+  "name": "read.chrillo.at",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js",
+    "deploy": "now -e NODE_ENV=production && now alias && now rm read-api --safe --yes"
+  },
+  "now": {
+    "name": "read-frontend",
+    "alias": "read.chrillo.at",
+    "dotenv": true
+  },
+  "author": "christoph peter",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "babel-plugin-styled-components": "^1.7.1",
+    "date-fns": "^1.29.0",
+    "express": "^4.16.3",
+    "gun": "^0.9.99994",
+    "next": "^7.0.0",
+    "react": "^16.5.1",
+    "react-dom": "^16.5.1",
+    "styled-components": "^3.4.6"
+  }
+}
