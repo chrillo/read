@@ -5,14 +5,13 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 
 import {errorHandler} from './lib/apiError'
-
+import url from 'url'
 import {initMongoDb} from './lib/mongodb'
 import { updateContentSources, updateContentSource, updateContentItem, publishContentItem } from './workers/contentSources';
 import { initJobs, JOBS } from './lib/jobs';
 import {initGraphQl} from './graphql/graphqlApi'
 import jwt from 'express-jwt';
 import { log } from './lib/log';
-
 
 
 const CONFIG = process.env

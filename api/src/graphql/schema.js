@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express'
+import {gql,AuthenticationError} from 'apollo-server-express'
 import ApiError from '../lib/apiError';
 
 import {login} from '../auth/auth'
@@ -35,6 +35,7 @@ export const typeDefs = gql`
         status: String,
         sourceId: String,
         itemSourceId: String,
+        itemSourceLabel: String, 
         time: Float,
         createdAt:Date,
         updatedAt:Date
@@ -67,7 +68,7 @@ export const typeDefs = gql`
 
 export const requireUser = (fn)=>(_, args, context)=>{
     const {user} = context
-    if(!user) throw new ApiError({code:10001,message:'not authorized', status:401})
+    if(!user) throw new AuthenticationError('not authorized');
     return fn ? fn({...args, user}, context) : null
 }
 

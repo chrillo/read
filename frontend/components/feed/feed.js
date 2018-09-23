@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { FeedItem } from './feedItem';
 
 const StyledList = styled.div`
-    max-width:960px;
+    max-width:1100px;
     margin:0 auto;
    
 `

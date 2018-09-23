@@ -1,13 +1,24 @@
 
 import axios from 'axios'
 import { promiseMap } from '../lib/helpers';
+import url from 'url'
 
 export const serializeItem = (sourceId) => (item)=>{
     item.sourceId = sourceId
     item.fingerprint = `hn:${item.id}`
     item.time = item.time * 1000
     item.type = 'url'
+    item.itemSourceLabel = getItemSourceLabel(item)
     return item
+}
+
+export const getItemSourceLabel = (item)=>{
+    let label = 'hn'
+    if(item.url){
+        label = url.parse(item.url).host 
+        label = label.replace(/^www\./, '');
+    }
+    return label
 }
 
 export const getItems = async({count = 20, sourceId} = {})=>{

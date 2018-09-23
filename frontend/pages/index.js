@@ -4,11 +4,11 @@ import { Page } from '../components/app/page';
 import { Header } from '../components/header/header'
 import { Feed } from '../components/feed/feed';
 
-import { getFeed } from '../lib/api';
+import { getFeed, getUser } from '../lib/api';
 
 export default class IndexPage extends React.Component{
-    static async getInitialProps({ req }) {
-        const feed = await getFeed({limit:20}, {req})
+    static async getInitialProps(ctx) {
+        const feed = await getFeed({limit:20}, ctx)
         return {feed}
     }
     render(){

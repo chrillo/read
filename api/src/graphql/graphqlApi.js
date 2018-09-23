@@ -1,4 +1,4 @@
-import {ApolloServer} from 'apollo-server-express'
+import {ApolloServer,ApolloError} from 'apollo-server-express'
 import expressPlayground from 'graphql-playground-middleware-express'
 import {resolvers, typeDefs} from './schema'
 import { log } from '../lib/log';
