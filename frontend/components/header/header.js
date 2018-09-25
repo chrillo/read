@@ -32,6 +32,14 @@ const StyledHeader = styled.div`
         color:#999;
         text-decoration:none;
     }
+    @media (max-width: 1024px) { 
+        .logo,.logout{
+            padding: 30px 10px;
+        }
+    }
+    @media (max-width: 768px) { 
+      
+    }
 `
 
 export const Header = ({user}={})=>{

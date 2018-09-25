@@ -10,6 +10,7 @@ const StyledListItem = styled.div`
     flex-direction:row;
     align-items:center;
     opacity:${({read})=> read ? 0.1 : 1};
+    
     .title{
         flex:1;
     }
@@ -34,6 +35,19 @@ const StyledListItem = styled.div`
     }
     .actions{
         padding:0 5px;
+        button{
+            display:inline-block;
+            padding:5px 10px;
+        }
+    }
+    @media (max-width: 1024px) { 
+        padding:10px 10px;
+    }
+    @media (max-width: 768px) { 
+        font-size:16px;
+        .actions{
+            
+        } 
     }
    
 `

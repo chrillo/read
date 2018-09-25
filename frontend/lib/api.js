@@ -1,5 +1,5 @@
 import { setCookie, getCookies } from "./cookie";
-import axios from '../../api/node_modules/axios'
+import axios from 'axios'
 import Router from 'next/router'
 
 const isDev = ({req} = {})=>{

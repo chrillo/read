@@ -29,7 +29,9 @@ const StyledForm = styled.form`
     input{
         display:block;
         width:100%;
-        padding:5px;
+        padding:10px;
+        border:1px solid #e0e0e0;
+        -webkit-appearance:none;
     }
     input[type=submit]{
         background:#000;
@@ -37,6 +39,7 @@ const StyledForm = styled.form`
         border:none;
         color:#FFF;
         width:100%;
+
         margin-top:10px;
         padding:10px 0;
 

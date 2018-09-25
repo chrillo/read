@@ -5,7 +5,7 @@ import { FeedItem } from './feedItem';
 const StyledList = styled.div`
     max-width:1100px;
     margin:0 auto;
-   
+    
 `
 export class Feed extends PureComponent{
 

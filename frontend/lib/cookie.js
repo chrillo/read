@@ -10,8 +10,6 @@ export const setCookie = (name,value,days)=>{
 }
 
 export const getCookies = ({req} = {}, options = {})=>{
-    return cookie.parse(
-        req && req.headers ? req.headers.cookie : document.cookie,
-        options
-    )
+    let cookieStr = req && req.headers ? req.headers.cookie : document.cookie
+    return cookie.parse(cookieStr || '',options)
 }

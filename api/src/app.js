@@ -50,7 +50,7 @@ const start = async(port)=>{
   
     let jobs = await initJobs(CONFIG)
 
-    jobs.purge()
+    //jobs.purge()
 
     jobs.define(JOBS.UPDATE_CONTENT_SOURCES, updateContentSources({jobs}))
     jobs.define(JOBS.UPDATE_CONTENT_SOURCE, updateContentSource({jobs}))
