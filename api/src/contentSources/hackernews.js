@@ -9,6 +9,9 @@ export const serializeItem = (sourceId) => (item)=>{
     item.time = item.time * 1000
     item.type = 'url'
     item.itemSourceLabel = getItemSourceLabel(item)
+    if(!item.url){
+        item.url = `https://news.ycombinator.com/item?id=${item.id}`
+    }
     return item
 }
 
