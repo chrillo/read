@@ -10,9 +10,15 @@ export const JOBS = {
 
 export const initJobs = async({MONGO_DB})=>{
     log('jobs','init jobs')
-    const agenda = new Agenda({db: {address: MONGO_DB, options:{ useNewUrlParser: true }}});
+    const agenda = new Agenda({
+        db: {address: MONGO_DB, options:{ useNewUrlParser: true }},
+        lockLimit:20
+    });
     await agenda.start();
     log('jobs','jobs started')
+
+   
+
     return agenda
 
 }

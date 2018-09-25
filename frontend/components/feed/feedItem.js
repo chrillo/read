@@ -20,6 +20,9 @@ const StyledListItem = styled.div`
         &:hover{
             text-decoration:underline;
         }
+        &:visited{
+            color:#999;
+        }
     }
     .source{
         font-size:12px;
