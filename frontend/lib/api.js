@@ -25,6 +25,15 @@ export const markAsRead = async({feedItemIds})=>{
     console.log('marked as read', data)
 }
 
+export const markAllAsRead = async()=>{
+    const data = await getGraphQLQuery(`mutation{
+        markAllAsRead{
+            feedItemCount
+        }
+    }`)
+    console.log('marked all as read', data)
+}
+
 export const login = async({email, password})=>{
     const {login:user, errors} = await getGraphQLQuery(`mutation{
         login(email:"${email}", password:"${password}"){
@@ -35,8 +44,8 @@ export const login = async({email, password})=>{
         }
     }`)
     if(user && user.jwt){
-        setCookie('user', JSON.stringify(user))
-        setCookie('jwt', user.jwt)
+        setCookie('user', JSON.stringify(user), 365)
+        setCookie('jwt', user.jwt, 365)
     }
     return user
 }
@@ -47,8 +56,12 @@ export const logout = ()=>{
 }
 
 export const getFeed = async({limit},ctx)=>{
-    const {feed} = await getGraphQLQuery(`query{
-        feed(limit: 100) {
+    const {feed,feedMeta} = await getGraphQLQuery(`query{
+        feedMeta{
+            feedItemCount,
+            contentSourceCount
+        }
+        feed(limit: ${limit}) {
             id
             read
             contentItem {
@@ -62,7 +75,7 @@ export const getFeed = async({limit},ctx)=>{
         }
     }`,ctx)
 
-    return feed
+    return {feed,feedMeta}
   
 }
 export const getUser = (ctx)=>{

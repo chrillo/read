@@ -4,21 +4,27 @@ import { Page } from '../components/app/page';
 import { Header } from '../components/header/header'
 import { Feed } from '../components/feed/feed';
 
-import { getFeed, getUser, markAsRead } from '../lib/api';
+import { getFeed, getUser, markAsRead, markAllAsRead } from '../lib/api';
 
 export default class IndexPage extends React.Component{
     static async getInitialProps(ctx) {
-        const feed = await getFeed({limit:20}, ctx)
-        return {feed}
+        const {feed,feedMeta} = await getFeed({limit:50}, ctx)
+        return {feed,feedMeta}
     }
     onRead = async(item)=>{
         await markAsRead({feedItemIds:[item.id]})
     }
+    onMarkAllAsRead = async()=>{
+       
+        const {feedMeta} = await markAllAsRead()
+        console.log('on mark all as read', feedMeta)
+    }
     render(){
-        const {feed} = this.props
+        const {feed, feedMeta} = this.props
         return <Page title="read">
-            <Header />
+            <Header onMarkAllAsRead={this.onMarkAllAsRead} feedMeta={feedMeta} />
             {feed && <Feed items={feed} onRead={this.onRead} />}
+           
         </Page>
     }
 }

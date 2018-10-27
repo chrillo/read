@@ -22,15 +22,23 @@ const StyledHeader = styled.div`
     .logo{
         padding: 0 30px;
         font-weight:300;
+        color:#000;
+        text-decoration:none;
         text-transform:uppercase;
     }
-    .logout{
+
+    .actions{
         margin-left: auto;
-        font-size:13px;
-        padding: 30px;
-  
-        color:#999;
-        text-decoration:none;
+        button{
+            display:flex;
+            height:50px;
+            border:none;
+            cursor:pointer;
+            border-left: 1px solid #ccc;
+            background: #FFF;
+            padding: 0 10px;
+           
+        }
     }
     @media (max-width: 1024px) { 
         .logo,.logout{
@@ -42,15 +50,19 @@ const StyledHeader = styled.div`
     }
 `
 
-export const Header = ({user}={})=>{
-
+export const Header = ({user,feedMeta, onMarkAllAsRead}={})=>{
+    const {feedItemCount} = feedMeta || {}
     return (<StyledHeader>
         <div className="header-spacer"></div>
         <header>
-            <span className="logo">Read</span>
-            <Link href={'/logout'}>
-                <a className="logout" >Logout</a>
+            <Link href="">
+                <a className="logo">Read</a>
             </Link>
+            <div className="actions">
+                {feedItemCount > 0 && <button onClick={onMarkAllAsRead}>
+                    Mark {feedItemCount} as read
+                </button>}
+            </div>
         </header>
     </StyledHeader>)
    

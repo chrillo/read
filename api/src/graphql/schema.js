@@ -2,7 +2,7 @@ import {gql,AuthenticationError} from 'apollo-server-express'
 import ApiError from '../lib/apiError';
 
 import {login} from '../auth/auth'
-import { getFeedForUser, getFeedItemForUser, markFeedItemsAsRead } from '../feeds/feed';
+import { getFeedForUser, getFeedItemForUser, markFeedItemsAsRead,markAllFeedItemsAsRead,getFeedMetaForUser } from '../feeds/feed';
 
 
 export const typeDefs = gql`
@@ -10,12 +10,14 @@ export const typeDefs = gql`
 
     type Query {
         feed(limit:Int, skip:Int ): [FeedItem],
-        feedItem(feedItemId: String):FeedItem
+        feedItem(feedItemId: String): FeedItem, 
+        feedMeta: Feed
     }
 
     type Mutation {
         login(email: String, password: String): User,
-        markAsRead(feedItemIds:[String]): [FeedItem]
+        markAsRead(feedItemIds:[String]): [FeedItem],
+        markAllAsRead: Feed
     }
 
     type User {
@@ -57,6 +59,11 @@ export const typeDefs = gql`
         createdAt:Date,
         updatedAt:Date
     }
+    type Feed {
+        contentSourceCount: Float,
+        feedItemCount: Float,
+        updatedAt: Date,
+    }
     type ContentSourceConnection {
         user: User,
         contentSource: ContentSource,
@@ -76,9 +83,11 @@ export const resolvers = {
     Query: {
         feed: requireUser(getFeedForUser),
         feedItem: requireUser(getFeedItemForUser),
+        feedMeta: requireUser(getFeedMetaForUser)
     },
     Mutation:{
         login: async(_, args,{JWT_SECRET}) => login({...args,JWT_SECRET}),
-        markAsRead: requireUser(markFeedItemsAsRead)
+        markAsRead: requireUser(markFeedItemsAsRead),
+        markAllAsRead: requireUser(markAllFeedItemsAsRead)
     }
 };

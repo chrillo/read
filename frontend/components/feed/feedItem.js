@@ -56,10 +56,18 @@ const StyledListItem = styled.div`
 `
 export class FeedItem extends Component{
     state = {}
+    constructor(){
+        super()
+        this.item
+    }
     onRead=()=>{
+        
         const {onRead,item} = this.props
         if(onRead) onRead(item)
         this.setState({read:true})
+    }
+    componentDidMount(){
+
     }
     render(){
         const {item} = this.props
@@ -67,6 +75,7 @@ export class FeedItem extends Component{
         const {title, url, time,createdAt, itemSourceLabel} = item.contentItem
         const {read} = this.state
         return (<StyledListItem read={read}>
+            
                 <span className="title">
                     <a href={url} target="_blank">{title}</a>
                     <span className="source">{itemSourceLabel}</span>

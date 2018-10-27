@@ -24,7 +24,7 @@ export const getItemSourceLabel = (item)=>{
     return label
 }
 
-export const getItems = async({count = 20, sourceId} = {})=>{
+export const getItems = async({count = 30, sourceId} = {})=>{
     const url = 'https://hacker-news.firebaseio.com/v0/topstories.json'
     const {data} = await axios.get(url)
 
@@ -33,7 +33,7 @@ export const getItems = async({count = 20, sourceId} = {})=>{
     const items = await promiseMap(ids,async(id)=>{
         const {data} = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
         return data
-    },{concurrency:10})
+    },{concurrency:15})
 
     return items.map(serializeItem(sourceId))
 

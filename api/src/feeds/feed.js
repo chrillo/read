@@ -35,9 +35,21 @@ export const getFeedForUser = async({user, limit=10, skip=0}={})=>{
     if(!user) throw new ApiError(ERRORS.NOT_AUTHORIZED)
     return await FeedItem.find().where({user: user.id || user._id, read:false}).populate('contentItem').sort('-_id').limit(limit).skip(skip)
 }
+
+export const getFeedMetaForUser = async({user})=>{
+    const [feedItemCount,contentSourceCount] = await Promise.all([
+        FeedItem.countDocuments({user: user.id || user._id, read:false}),
+        ContentSourceConnection.countDocuments({user: user.id || user._id})
+    ])
+    return {
+        feedItemCount,
+        contentSourceCount
+    }
+}
+
 export const getFeedItemForUser = async({user, feedItemId})=>{
     if(!user) throw new ApiError(ERRORS.NOT_AUTHORIZED)
-    let feedItem = await FeedItem.findById(feedItemId).populate('contentItem')
+    let feedItem = await FeedItem.findById(feedItemId).populate({path:'contentItem'})
     if(feedItem.user !== user.id){
         throw new ApiError(ERRORS.NOT_AUTHORIZED)
     }
@@ -52,4 +64,12 @@ export const markFeedItemsAsRead = async({user, feedItemIds})=>{
     return feedItemIds.map((id)=>{
         return {id,read:true}
     })
+}
+
+export const markAllFeedItemsAsRead = async({user})=>{
+    if(!user) throw new ApiError(ERRORS.NOT_AUTHORIZED)
+
+    let res = await FeedItem.updateMany({user: user.id || user._id, read: false},{read:true})
+
+    return getFeedMetaForUser({user})
 }
