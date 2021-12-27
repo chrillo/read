@@ -37,7 +37,7 @@ const StyledHeader = styled.div`
             border-left: 1px solid #ccc;
             background: #FFF;
             padding: 0 10px;
-           
+            color:#999;
         }
     }
     @media (max-width: 1024px) { 
