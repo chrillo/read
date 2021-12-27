@@ -1,0 +1,31 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+}
+
+model FeedSource {
+  id    Int     @id @default(autoincrement())
+  name  String  
+  url   String
+  items FeedItem[]
+}
+
+model FeedItem {
+  id    Int     @id @default(autoincrement())
+  name  String
+  sourceId Int
+  source  FeedSource    @relation(fields: [sourceId], references: [id])
+}
+
