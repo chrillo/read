@@ -1,20 +1,25 @@
-import { useLoaderData } from "remix";
-import { PrismaClient } from '@prisma/client'
+import { Link, LoaderFunction, NavLink, useLoaderData } from "remix";
+import { FeedItem, FeedSource } from '@prisma/client'
+import { db } from "~/server/db.server";
+import { FeedList } from "~/components/feeds/feedList";
+import { getFeedItems } from "~/server/feeds/feeds.service";
+import { FeedItemWithSource } from "~/types/feedItem";
+import { FeedListEmpty } from "~/components/feeds/feedListEmpty";
+import { Page } from "~/components/nav/page";
 
 
-export function loader(){
-  const prisma = new PrismaClient()
 
-  return prisma.user.findMany()
+export const loader:LoaderFunction = async():Promise<FeedItemWithSource[]>=>{
+
+  return await db.feedItem.findMany({orderBy:{createdAt:'desc'},include:{source:true},where:{read:false}})
+  
 }
 
 export default function Index() {
-  const data = useLoaderData()
-  console.log('data',data)
+  const items = useLoaderData<FeedItemWithSource[]>()
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
-        Read
-        
-    </div>
+    <Page>
+        {items.length ? <FeedList items={items} ></FeedList> : <FeedListEmpty/>}
+    </Page>
   );
 }
