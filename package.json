@@ -6,14 +6,12 @@
   "scripts": {
     "build": "remix build",
     "dev": "remix dev",
-    "generate:client": "PRISMA_CLIENT_ENGINE_TYPE='dataproxy' npx prisma generate",
-    "db:push": "DATABASE_URL=\"$(grep MIGRATE_DATABASE_URL .env | cut -d '=' -f2)\" npx prisma db push",
     "postinstall": "remix setup node",
     "start": "remix-serve build"
   },
   "dependencies": {
     "@prisma/client": "^3.7.0",
-    "@remix-run/cloudflare-workers": "^1.1.1",
+    "@remix-run/express": "^1.1.1",
     "@remix-run/react": "^1.1.1",
     "@remix-run/serve": "^1.1.1",
     "prisma": "^3.7.0",
