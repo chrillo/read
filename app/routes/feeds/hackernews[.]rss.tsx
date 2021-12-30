@@ -1,5 +1,5 @@
 import type { LoaderFunction } from "remix";
-import { getFrontPageItems } from "~/server/feeds/hackernews";
+import { getFrontPageItems } from "~/server/feeds/hackernews.server";
 
 
 function escapeCdata(s: string) {

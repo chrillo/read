@@ -1,8 +1,6 @@
-import { Link, LoaderFunction, NavLink, useLoaderData } from "remix";
-import { FeedItem, FeedSource } from '@prisma/client'
-import { db } from "~/server/db.server";
+import { LoaderFunction, useLoaderData } from "remix";
 import { FeedList } from "~/components/feeds/feedList";
-import { getFeedItems } from "~/server/feeds/feeds.service";
+import { getFeedItems } from "~/server/feeds/feeds.server";
 import { FeedItemWithSource } from "~/types/feedItem";
 import { FeedListEmpty } from "~/components/feeds/feedListEmpty";
 import { Page } from "~/components/nav/page";
@@ -11,7 +9,7 @@ import { Page } from "~/components/nav/page";
 
 export const loader:LoaderFunction = async():Promise<FeedItemWithSource[]>=>{
 
-  return await db.feedItem.findMany({orderBy:{createdAt:'desc'},include:{source:true},where:{read:false}})
+  return getFeedItems()//await db.feedItem.findMany({orderBy:{createdAt:'desc'},include:{source:true},where:{read:false}})
   
 }
 

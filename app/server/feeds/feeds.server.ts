@@ -11,13 +11,18 @@ const md5 = async(value:string)=>{
   return hashHex
 }
 
-export const getFeeds = async()=>{
+export const getFeedSources = async()=>{
+    return await db.feedSource.findMany()
+}
+
+export const getActiveFeedSources = async()=>{
     return await db.feedSource.findMany({where:{active:true}})
 }
 
+
 export const syncFeeds = async()=>{
     const start = Date.now()
-    const feeds = await getFeeds()
+    const feeds = await getActiveFeedSources()
     for(let index in feeds){
         await syncFeed(feeds[index].id)
     }
@@ -28,8 +33,19 @@ export const syncFeeds = async()=>{
     }
 }
 
+export const updateFeedItem = async(itemId:number, data:Partial<FeedItem>)=>{
+    const feedItem = await db.feedItem.update({
+        where:{
+            id:Number(itemId)
+        },
+        data:{
+            read:true
+        }
+    })
+    return feedItem
+}
 export const getFeedItems = async()=>{
-    return await db.feedItem.findMany({orderBy:{createdAt:'desc'},include:{source:true}})
+    return await db.feedItem.findMany({orderBy:{createdAt:'desc'},include:{source:true},where:{read:false}})
 }
 
 export const syncFeed = async(feedId:number)=>{
