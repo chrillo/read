@@ -32,8 +32,8 @@ export const getHackerNewsItem = async(id:number):Promise<FeedItem>=>{
     }
 }
 
-export const getFrontPageItems = async(count = 100):Promise<FeedItem[]>=>{
+export const getFrontPageItems = async(from=0,count = 100):Promise<FeedItem[]>=>{
     const res = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json')
     const ids = await res.json() as number[] 
-    return await Promise.all(ids.slice(0,count).map(getHackerNewsItem))
+    return await Promise.all(ids.slice(from,count).map(getHackerNewsItem))
 }

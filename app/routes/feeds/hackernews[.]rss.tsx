@@ -16,9 +16,12 @@ function escapeHtml(s: string) {
 }
 
 export const loader: LoaderFunction = async ({
-  request
+  request,
 }) => {
-  const items = await getFrontPageItems(50)
+  const page = Number(new URL(request.url).searchParams.get('page')) || 1
+  const from = (page -1) * 25 
+  const to = page * 25
+  const items = await getFrontPageItems(from,to)
 
   const host =
     request.headers.get("X-Forwarded-Host") ??

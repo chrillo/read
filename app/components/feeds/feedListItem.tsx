@@ -1,12 +1,13 @@
+import { FeedItem } from "@prisma/client"
 import { Form, useFetcher } from "remix"
-import type { FeedItemWithSource } from "~/types/feedItem"
+
 
 const getDomain = (link?:string)=>{
     if(!link) return null
     return new URL(link).hostname.replace('www.','')
 }
 
-export const FeedListItem = ({item}:{item:FeedItemWithSource})=>{
+export const FeedListItem = ({item}:{item:FeedItem})=>{
 
     let fetcher = useFetcher();
 

@@ -45,7 +45,7 @@ export const updateFeedItem = async(itemId:number, data:Partial<FeedItem>)=>{
     return feedItem
 }
 export const getFeedItems = async()=>{
-    return await db.feedItem.findMany({orderBy:{createdAt:'desc'},include:{source:true},where:{read:false}})
+    return await db.feedItem.findMany({orderBy:{createdAt:'desc'},where:{read:false}})
 }
 
 export const syncFeed = async(feedId:number)=>{
@@ -54,32 +54,34 @@ export const syncFeed = async(feedId:number)=>{
     const parser = new RssParser( {customFields: {
         item: ['hn:comments','id'],
       }});
+    const urls = feed.url.split(',')
+    for(let url of urls){
+        const remoteFeed = await parser.parseURL(url);
+        const updates = remoteFeed.items.map((remoteItem) => {
+            return async()=>{
+                const guid = remoteItem.guid || remoteItem.id || await md5(JSON.stringify(remoteItem))
+                
+                const update = {
+                    title:remoteItem.title || '',
+                    url:remoteItem.link || '',
+                    author: remoteItem.creator,
+                    commentsUrl: remoteItem['hn:comments'] || '',
+                    content:remoteItem.content || '',
+                    sourceId:feed?.id,
+                    guid,
+                }
+                const create = {
+                    read:false,
+                    //createdAt: remoteItem.pubDate ? new Date(remoteItem.pubDate) : undefined,
+                    ...update
+                }
+                return await db.feedItem.upsert({update,create,where:{guid}})
+            }
+        });
 
-    const remoteFeed = await parser.parseURL(feed.url);
-    const updates = remoteFeed.items.map((remoteItem) => {
-        return async()=>{
-            const guid = remoteItem.guid || remoteItem.id || await md5(JSON.stringify(remoteItem))
-            
-            const update = {
-                title:remoteItem.title || '',
-                url:remoteItem.link || '',
-                author: remoteItem.creator,
-                commentsUrl: remoteItem['hn:comments'] || '',
-                content:remoteItem.content || '',
-                sourceId:feed?.id,
-                guid,
-            }
-            const create = {
-                read:false,
-                //createdAt: remoteItem.pubDate ? new Date(remoteItem.pubDate) : undefined,
-                ...update
-            }
-            return await db.feedItem.upsert({update,create,where:{guid}})
+        for(let i in updates){
+            await updates[i]()
         }
-    });
-
-    for(let i in updates){
-        await updates[i]()
     }
    
 }
