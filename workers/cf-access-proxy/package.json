@@ -1,0 +1,13 @@
+{
+    "private": true,
+    "name": "grandcentra-public-functn-com",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "author": "Christoph Peter",
+    "license": "MIT",
+    "dependencies": {
+        "jsonwebtoken": "^8.5.1"
+    }
+  }
+  
