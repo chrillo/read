@@ -49,38 +49,44 @@ export const getFeedItems = async()=>{
 }
 
 export const syncFeed = async(feedId:number)=>{
-    const feed = await db.feedSource.findFirst({where:{id:feedId}})
-    if(!feed || !feed.active) return
-    const parser = new RssParser( {customFields: {
-        item: ['hn:comments','id'],
-      }});
-    console.log('fetch feed',feed.url)
-    const remoteFeed = await parser.parseURL(feed.url);
-    const updates = remoteFeed.items.map((remoteItem) => {
-        return async()=>{
-            const guid = remoteItem.guid || remoteItem.id || await md5(JSON.stringify(remoteItem))
+    try{
+        const feed = await db.feedSource.findFirst({where:{id:feedId}})
+        if(!feed || !feed.active) return
+        const parser = new RssParser( {customFields: {
+            item: ['hn:comments','id'],
+        }});
+        console.log('fetch feed',feed.url)
+        const remoteFeed = await parser.parseURL(feed.url);
+        const updates = remoteFeed.items.map((remoteItem) => {
+            return async()=>{
             
-            const update = {
-                title:remoteItem.title || '',
-                url:remoteItem.link || '',
-                author: remoteItem.creator,
-                commentsUrl: remoteItem['hn:comments'] || '',
-                content:remoteItem.content || '',
-                sourceId:feed?.id,
-                guid,
+                const guid = remoteItem.guid || remoteItem.id || await md5(JSON.stringify(remoteItem))
+                
+                const update = {
+                    title:remoteItem.title || '',
+                    url:remoteItem.link || '',
+                    author: remoteItem.creator,
+                    commentsUrl: remoteItem['hn:comments'] || '',
+                    content:remoteItem.content || '',
+                    sourceId:feed?.id,
+                    guid,
+                }
+                const create = {
+                    read:false,
+                    //createdAt: remoteItem.pubDate ? new Date(remoteItem.pubDate) : undefined,
+                    ...update
+                }
+                return await db.feedItem.upsert({update,create,where:{guid}})
+                
             }
-            const create = {
-                read:false,
-                //createdAt: remoteItem.pubDate ? new Date(remoteItem.pubDate) : undefined,
-                ...update
-            }
-            return await db.feedItem.upsert({update,create,where:{guid}})
-        }
-    });
+        });
 
-    for(let i in updates){
-        await updates[i]()
-    }
-    
+        for(let i in updates){
+            await updates[i]()
+        }
+    }catch(e){
+        console.error("error syncing feed",feedId)
+        console.error(e)
+    } 
    
 }
