@@ -44,6 +44,8 @@ model FeedItem {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
+  @@unique([guid])
+
   @@index([read, createdAt(sort: Desc)])
 }
 
