@@ -1,6 +1,7 @@
 import { FeedItem, FeedSource } from "@prisma/client";
 import { db } from "../db.server";
 import RssParser from 'rss-parser';
+import { promiseMap } from "~/utils/promiseMap";
 const crypto = require('crypto').webcrypto;
 
 const md5 = async(value:string)=>{
@@ -81,10 +82,10 @@ export const syncFeed = async(feedId:string)=>{
                 
             }
         });
-
-        for(let i in updates){
-            await updates[i]()
-        }
+        await promiseMap(updates, (update)=>{
+            return update()
+        },{concurrency:20})
+       
         console.log('feed updated',feed.title,'took',Date.now() - start,'ms, updates: ',updates.length)
     }catch(e){
         console.error("error syncing feed",feedId)
