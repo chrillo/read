@@ -1,10 +1,9 @@
 import { FeedItem } from "@prisma/client";
 
 type HackerNewsItem = {
- 
+    id: string
     by: string
     descendants: number
-    id: number
     kids?: number[]
     score: number[],
     time: number

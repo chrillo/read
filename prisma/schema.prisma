@@ -3,22 +3,23 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["mongoDb","extendedIndexes"]
 }
 
 datasource db {
-  provider = "postgres"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
+  id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
   email String  @unique
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
 
 model FeedSource {
-  id    Int     @id @default(autoincrement())
+  id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
   title  String  
   description String
   url   String
@@ -30,7 +31,7 @@ model FeedSource {
 }
 
 model FeedItem {
-  id    Int     @id @default(autoincrement())
+  id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
   guid  String  @unique
   title  String
   content String
@@ -38,9 +39,11 @@ model FeedItem {
   author String?
   commentsUrl String?
   read Boolean
-  sourceId Int?
+  sourceId String?
   source  FeedSource? @relation(fields: [sourceId], references: [id])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@index([read, createdAt(sort: Desc)])
 }
 

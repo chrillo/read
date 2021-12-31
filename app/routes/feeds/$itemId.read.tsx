@@ -7,6 +7,6 @@ export const action:ActionFunction = async({request,params})=>{
     if(!itemId){
         return
     }
-    return json(await updateFeedItem(Number(itemId), {read:true}))
+    return json(await updateFeedItem(itemId, {read:true}))
 }
 

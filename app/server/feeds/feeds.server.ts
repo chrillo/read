@@ -33,10 +33,10 @@ export const syncFeeds = async()=>{
     }
 }
 
-export const updateFeedItem = async(itemId:number, data:Partial<FeedItem>)=>{
+export const updateFeedItem = async(itemId:string, data:Partial<FeedItem>)=>{
     const feedItem = await db.feedItem.update({
         where:{
-            id:Number(itemId)
+            id:itemId
         },
         data:{
             read:true
@@ -48,8 +48,9 @@ export const getFeedItems = async()=>{
     return await db.feedItem.findMany({orderBy:{createdAt:'desc'},where:{read:false}})
 }
 
-export const syncFeed = async(feedId:number)=>{
+export const syncFeed = async(feedId:string)=>{
     try{
+        const start = Date.now()
         const feed = await db.feedSource.findFirst({where:{id:feedId}})
         if(!feed || !feed.active) return
         const parser = new RssParser( {customFields: {
@@ -84,6 +85,7 @@ export const syncFeed = async(feedId:number)=>{
         for(let i in updates){
             await updates[i]()
         }
+        console.log('feed updated, took',Date.now() - start,'ms, updates: ',updates.length)
     }catch(e){
         console.error("error syncing feed",feedId)
         console.error(e)
