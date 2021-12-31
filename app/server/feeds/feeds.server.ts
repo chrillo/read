@@ -80,8 +80,13 @@ export const syncFeed = async(feedId:string)=>{
                     //createdAt: remoteItem.pubDate ? new Date(remoteItem.pubDate) : undefined,
                     ...update
                 }
-                return await db.feedItem.upsert({update,create,where:{guid}})
-                
+                // TODO: use redis here
+                const exists = await db.feedItem.findUnique({where:{guid}})
+                if(exists){
+                    return db.feedItem.update({where:{guid}, data:update})
+                }else{
+                    return db.feedItem.create({data:create})
+                }                
             }
         });
         await promiseMap(updates, (update)=>{
