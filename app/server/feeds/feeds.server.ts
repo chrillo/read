@@ -58,7 +58,9 @@ export const syncFeed = async(feedId:string)=>{
             item: ['hn:comments','id'],
         }});
         console.log('fetch feed',feed.url)
+        const fetchStart = Date.now()
         const remoteFeed = await parser.parseURL(feed.url);
+        console.log('feed fetched',feed.title, 'took',Date.now() - fetchStart,'ms')
         const updates = remoteFeed.items.map((remoteItem) => {
             return async()=>{
             
