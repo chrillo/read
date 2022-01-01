@@ -93,6 +93,7 @@ a.active,a.active:visited{
    padding:0.5rem;
    border-radius: 3px;
    background:#fff;
+   color:#000;
    border:1px solid #333;
    -webkit-appearance: none;
    appearance: none; 
