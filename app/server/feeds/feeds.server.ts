@@ -89,11 +89,13 @@ export const syncFeed = async(feedId:string)=>{
                 }                
             }
         });
+        const writeStart = Date.now()
         await promiseMap(updates, (update)=>{
             return update()
         },{concurrency:20})
+        console.log('updates written',feed.title, 'took',Date.now() - writeStart,updates.length)
        
-        console.log('feed updated',feed.title,'took',Date.now() - start,'ms, updates: ',updates.length)
+        console.log('feed updated',feed.title,'took in total',Date.now() - start,'ms, updates: ',updates.length)
     }catch(e){
         console.error("error syncing feed",feedId)
         console.error(e)
