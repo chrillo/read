@@ -1,15 +1,11 @@
-import { FeedItem, FeedSource } from "@prisma/client";
+import { FeedItem, FeedSource, Prisma, prisma } from "@prisma/client";
 import { db } from "../db.server";
 import RssParser from 'rss-parser';
 import { promiseMap } from "~/utils/promiseMap";
-const crypto = require('crypto').webcrypto;
+import crypto from 'crypto'
 
-const md5 = async(value:string)=>{
-  const msgUint8 = new TextEncoder().encode(value) // encode as (utf-8) Uint8Array
-  const hashBuffer = await crypto.subtle.digest('SHA-1', msgUint8) // hash the message
-  const hashArray = Array.from(new Uint8Array(hashBuffer)) // convert buffer to byte array
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('') // convert bytes to hex string
-  return hashHex
+const getSHA256 = (input:object)=>{
+    return crypto.createHash('sha256').update(JSON.stringify(input)).digest('hex')
 }
 
 export const getFeedSources = async()=>{
@@ -49,6 +45,11 @@ export const getFeedItems = async()=>{
     return await db.feedItem.findMany({orderBy:{createdAt:'desc'},where:{read:false}})
 }
 
+const getGuid = (remoteItem:({id: string
+} & RssParser.Item))=>{
+    return remoteItem.guid || remoteItem.id || getSHA256(remoteItem)
+}
+
 export const syncFeed = async(feedId:string)=>{
     try{
         const start = Date.now()
@@ -61,39 +62,50 @@ export const syncFeed = async(feedId:string)=>{
         const fetchStart = Date.now()
         const remoteFeed = await parser.parseURL(feed.url);
         console.log('feed fetched',feed.title, 'took',Date.now() - fetchStart,'ms')
-        const updates = remoteFeed.items.map((remoteItem) => {
-            return async()=>{
-            
-                const guid = remoteItem.guid || remoteItem.id || await md5(JSON.stringify(remoteItem))
-                
-                const update = {
+
+        const guids = remoteFeed.items.map(getGuid)
+
+        const existing = await db.feedItem.findMany({where:{guid: {in:guids}}})
+
+        const existingMap = existing.reduce((agg,item)=>{
+            agg[item.guid] = item
+            return agg
+        },{} as{[key:string]:FeedItem})
+
+        const {updates,creates} = remoteFeed.items.reduce((agg,remoteItem) => {
+           
+                const guid = getGuid(remoteItem)
+                const item = {
                     title:remoteItem.title || '',
                     url:remoteItem.link || '',
-                    author: remoteItem.creator,
+                    author: remoteItem.creator || null,
                     commentsUrl: remoteItem['hn:comments'] || '',
                     content:remoteItem.content || '',
                     sourceId:feed?.id,
                     guid,
                 }
-                const create = {
-                    read:false,
-                    //createdAt: remoteItem.pubDate ? new Date(remoteItem.pubDate) : undefined,
-                    ...update
-                }
-                // TODO: use redis here
-                const exists = await db.feedItem.findUnique({where:{guid}})
-                if(exists){
-                    return db.feedItem.update({where:{guid}, data:update})
+                const existingItem = existingMap[guid]
+                if(existingItem){
+                    agg.updates.push(async()=>{
+                        return db.feedItem.update({where:{id:existingItem.id},data:item})
+                    })
                 }else{
-                    return db.feedItem.create({data:create})
-                }                
-            }
+                    agg.creates.push({...item, read:false})
+                }
+              
+            return agg
+        },{updates:[],creates:[]} as {
+            updates:(()=>Promise<FeedItem>)[],
+            creates:Prisma.FeedItemCreateInput[]
         });
         const writeStart = Date.now()
-        await promiseMap(updates, (update)=>{
-            return update()
-        },{concurrency:20})
-        console.log('updates written',feed.title, 'took',Date.now() - writeStart,updates.length)
+        if(creates.length){
+            await db.feedItem.createMany({data:creates})
+        }
+        if(updates.length){
+            await promiseMap(updates, (update)=>update() ,{concurrency:10})
+        }
+        console.log('updates written',feed.title, 'took',Date.now() - writeStart,updates.length,creates.length)
        
         console.log('feed updated',feed.title,'took in total',Date.now() - start,'ms, updates: ',updates.length)
     }catch(e){
