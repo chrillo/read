@@ -55,9 +55,10 @@ export const syncFeed = async(feedId:string)=>{
         const start = Date.now()
         const feed = await db.feedSource.findFirst({where:{id:feedId}})
         if(!feed || !feed.active) return
-        const parser = new RssParser( {customFields: {
+        const parser = new RssParser( {timeout:90000,customFields: {
             item: ['hn:comments','id'],
-        }});
+        }
+        });
         console.log('fetch feed',feed.url)
         const fetchStart = Date.now()
         const remoteFeed = await parser.parseURL(feed.url);
@@ -86,16 +87,14 @@ export const syncFeed = async(feedId:string)=>{
                 }
                 const existingItem = existingMap[guid]
                 if(existingItem){
-                    agg.updates.push(async()=>{
-                        return db.feedItem.update({where:{id:existingItem.id},data:item})
-                    })
+                    agg.updates.push(db.feedItem.update({where:{id:existingItem.id},data:item}))
                 }else{
                     agg.creates.push({...item, read:false})
                 }
               
             return agg
         },{updates:[],creates:[]} as {
-            updates:(()=>Promise<FeedItem>)[],
+            updates:(Prisma.Prisma__FeedItemClient<FeedItem>)[],
             creates:Prisma.FeedItemCreateInput[]
         });
         const writeStart = Date.now()
@@ -103,7 +102,7 @@ export const syncFeed = async(feedId:string)=>{
             await db.feedItem.createMany({data:creates})
         }
         if(updates.length){
-            await promiseMap(updates, (update)=>update() ,{concurrency:10})
+            await db.$transaction(updates)
         }
         console.log('updates written',feed.title, 'took',Date.now() - writeStart,updates.length,creates.length)
        
