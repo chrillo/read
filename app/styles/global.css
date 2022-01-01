@@ -30,11 +30,14 @@ a.active,a.active:visited{
 }
 
 .navigation{
+
     display: flex;
-    flex-direction: column;
+    
 }
-.navigation{
-    padding:0.5rem;
+.navigation a{
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-right:1rem;
 }
 
 
@@ -54,7 +57,8 @@ a.active,a.active:visited{
     font-weight: bold;
 }
 .feed-item{
-    padding:0.25rem 0 1rem 0;
+    padding:0.25rem 0 0.25rem 0;
+    margin-bottom: 1rem;
     display: flex;
     justify-content: space-between;
     border-top:1px solid #ddd;
@@ -86,10 +90,12 @@ a.active,a.active:visited{
     justify-content: center;
 }
 .button{
-    padding:0.25rem;
+   padding:0.5rem;
    border-radius: 3px;
    background:#fff;
-   border:1px solid #333; 
+   border:1px solid #333;
+   -webkit-appearance: none;
+   appearance: none; 
 }
 .button:hover{
     background:#ddd;

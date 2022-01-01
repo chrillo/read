@@ -27,7 +27,7 @@ export const FeedListItem = ({item}:{item:FeedItem})=>{
                     className="button"
                     disabled={fetcher.state === "submitting"}
                     type={"submit"} 
-                    value="Mark as Read" />
+                    value="Read" />
             </fetcher.Form>
         </div>
        
