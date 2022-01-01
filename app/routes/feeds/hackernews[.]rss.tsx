@@ -59,7 +59,7 @@ export const loader: LoaderFunction = async ({
                 item.author || ''
               )}]]></author>
               <pubDate>${item.createdAt.toUTCString()}</pubDate>
-              <hn:comments>${item.commentsUrl}</hn:comments>
+              ${item.commentsUrl ? `<hn:comments>${item.commentsUrl}</hn:comments>` : ''}
               <link>${item.url ? escapeHtml(item.url) : item.guid}</link>
               <guid>${item.guid}</guid>
             </item>
