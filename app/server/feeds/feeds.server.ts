@@ -53,7 +53,7 @@ const getGuid = (remoteItem:({id: string
 const isItemChanged = (item:FeedItem,updateItem:Partial<FeedItem>)=>{
     const keys = ['commentsUrl','title','url'] as (keyof FeedItem)[]
     return keys.reduce((changed,key)=>{
-        if(item[key] ==! updateItem[key]) changed = true
+        if(item[key] !== updateItem[key]) changed = true
         return changed
     },false)
 }
