@@ -4,6 +4,7 @@ import { getFeedItems } from "~/server/feeds/feeds.server";
 import { FeedListEmpty } from "~/components/feeds/feedListEmpty";
 import { Page } from "~/components/nav/page";
 import { FeedItem } from "@prisma/client";
+import { useRevalidateOnFocus } from "~/utils/revalidateOnFocus";
 
 
 
@@ -15,6 +16,7 @@ export const loader:LoaderFunction = async():Promise<FeedItem[]>=>{
 
 export default function Index() {
   const items = useLoaderData<FeedItem[]>()
+  useRevalidateOnFocus()
   return (
     <Page>
         {items.length ? <FeedList items={items} ></FeedList> : <FeedListEmpty/>}

@@ -5,7 +5,7 @@ export const action:ActionFunction = async({request,params})=>{
 
     const {itemId} = params
     if(!itemId){
-        return
+        return null
     }
     return json(await updateFeedItem(itemId, {read:true}))
 }
