@@ -50,6 +50,14 @@ const getGuid = (remoteItem:({id: string
     return remoteItem.guid || remoteItem.id || getSHA256(remoteItem)
 }
 
+const isItemChanged = (item:FeedItem,updateItem:Partial<FeedItem>)=>{
+    const keys = ['commentsUrl','title','url'] as (keyof FeedItem)[]
+    return keys.reduce((changed,key)=>{
+        if(item[key] ==! updateItem[key]) changed = true
+        return changed
+    },false)
+}
+
 export const syncFeed = async(feedId:string)=>{
     try{
         const start = Date.now()
@@ -80,16 +88,16 @@ export const syncFeed = async(feedId:string)=>{
                     title:remoteItem.title || '',
                     url:remoteItem.link || '',
                     author: remoteItem.creator || null,
-                    commentsUrl: remoteItem['hn:comments'] || '',
-                    content:remoteItem.content || '',
+                    commentsUrl: remoteItem['hn:comments'] || null,
+                    content:'',
                     sourceId:feed?.id,
                     guid,
                 }
                 const existingItem = existingMap[guid]
-                if(existingItem){
-                    agg.updates.push(db.feedItem.update({where:{id:existingItem.id},data:item}))
-                }else{
+                if(!existingItem){
                     agg.creates.push({...item, read:false})
+                }else if(existingItem && isItemChanged(existingItem,item)){
+                    agg.updates.push(db.feedItem.update({where:{id:existingItem.id},data:item}))
                 }
               
             return agg
