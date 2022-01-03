@@ -1,6 +1,6 @@
 import { FeedSource } from "@prisma/client"
-import { useLoaderData } from "remix"
-import { Page } from "~/components/nav/page"
+import { Link, useLoaderData } from "remix"
+import { Page, PageActions } from "~/components/app/page"
 import { getFeedSources } from "~/server/feeds/feeds.server"
 
 
@@ -11,9 +11,10 @@ export const loader = async()=>{
 export default function FeedsList(){
     const data = useLoaderData<FeedSource[]>()
     return <Page>
+        <PageActions><Link className="button" to="new">New Feed Source</Link></PageActions>
         {data.map((feed)=>{
             return <div key={feed.id} className="feed-source">
-                <span>{feed.title}</span>
+                <Link to={`${feed.id}`}>{feed.title}</Link>
                 {' '}
                 <a target="_blank" href={feed.url}>{feed.url}</a>
             </div>

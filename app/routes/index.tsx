@@ -1,8 +1,8 @@
 import { LoaderFunction, useLoaderData } from "remix";
-import { FeedList } from "~/components/feeds/feedList";
+import { FeedList } from "~/components/feed/feedList";
 import { getFeedItems } from "~/server/feeds/feeds.server";
-import { FeedListEmpty } from "~/components/feeds/feedListEmpty";
-import { Page } from "~/components/nav/page";
+import { FeedListEmpty } from "~/components/feed/feedListEmpty";
+import { Page } from "~/components/app/page";
 import { FeedItem } from "@prisma/client";
 import { useRevalidateOnFocus } from "~/utils/revalidateOnFocus";
 

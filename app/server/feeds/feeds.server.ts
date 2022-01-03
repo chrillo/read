@@ -3,6 +3,7 @@ import { db } from "../db.server";
 import RssParser from 'rss-parser';
 import { promiseMap } from "~/utils/promiseMap";
 import crypto from 'crypto'
+import { isString } from "~/utils/typeGuards";
 
 const getSHA256 = (input:object)=>{
     return crypto.createHash('sha256').update(JSON.stringify(input)).digest('hex')
@@ -10,6 +11,29 @@ const getSHA256 = (input:object)=>{
 
 export const getFeedSources = async()=>{
     return await db.feedSource.findMany()
+}
+export const getFeedSource = async({id}:{id:string})=>{
+    return await db.feedSource.findUnique({where:{id}})
+}
+
+export const validateFeedUrl = async({url}:{url:string})=>{
+    const parser = getFeedParser()
+    const feed = await parser.parseURL(url) 
+    return feed
+}
+export const updateFeedSource = async(id:string, data:{title:string,url:string})=>{
+    return await db.feedSource.update({where:{id},data})
+}
+export const createFeedSource = async({title,url}:{title:string,url:string})=>{
+
+    return await db.feedSource.create({
+        data:{
+            title,
+            url,
+            active:true,
+            type:'rss'
+        }
+    })
 }
 
 export const getActiveFeedSources = async()=>{
@@ -58,15 +82,19 @@ const isItemChanged = (item:FeedItem,updateItem:Partial<FeedItem>)=>{
     },false)
 }
 
+const getFeedParser = ()=>{
+    return new RssParser( {timeout:90000,customFields: {
+        item: ['hn:comments','id'],
+    }
+    });
+}
+
 export const syncFeed = async(feedId:string)=>{
     try{
         const start = Date.now()
         const feed = await db.feedSource.findFirst({where:{id:feedId}})
         if(!feed || !feed.active) return
-        const parser = new RssParser( {timeout:90000,customFields: {
-            item: ['hn:comments','id'],
-        }
-        });
+        const parser = getFeedParser()
         console.log('fetch feed',feed.url)
         const fetchStart = Date.now()
         const remoteFeed = await parser.parseURL(feed.url);
@@ -87,7 +115,7 @@ export const syncFeed = async(feedId:string)=>{
                 const item = {
                     title:remoteItem.title || '',
                     url:remoteItem.link || '',
-                    author: remoteItem.creator || null,
+                    author: isString(remoteItem.creator) ? remoteItem.creator : null,
                     commentsUrl: remoteItem['hn:comments'] || null,
                     content:'',
                     sourceId:feed?.id,

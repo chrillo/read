@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { Navigation } from "./navigation"
+import { Navigation } from "../nav/navigation"
 
 
 export const Page:FC = ({children})=>{
@@ -9,4 +9,8 @@ export const Page:FC = ({children})=>{
         {children}
         </div>
     </div>
+}
+
+export const PageActions:FC = ({children})=>{
+    return <div className="page-actions">{children}</div>
 }

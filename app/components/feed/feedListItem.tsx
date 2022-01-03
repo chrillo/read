@@ -26,7 +26,7 @@ export const FeedListItem = ({item}:{item:FeedItem})=>{
         </div>
         <div className="feed-item-actions">
             
-            <fetcher.Form method="post" action={`/feeds/${item.id}/read`}>
+            <fetcher.Form method="post" action={`/item/${item.id}/read`}>
                 <input 
                     className="button"
                     //disabled={fetcher.state === "submitting"}

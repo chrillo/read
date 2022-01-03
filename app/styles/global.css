@@ -29,6 +29,10 @@ a.active,a.active:visited{
     max-width: 60rem;
     margin:auto;
 }
+.page-actions{
+    display: flex;
+    margin-bottom: 1rem;
+}
 
 .navigation{
 
@@ -104,10 +108,15 @@ a.active,a.active:visited{
    border:1px solid #333;
    -webkit-appearance: none;
    appearance: none; 
+   cursor: pointer;
+}
+.button:visited{
+    color:#000;
 }
 .button:hover{
     background:#ddd;
-    cursor: pointer;
+
+    text-decoration: none;
 }
 .feed-item .source{
     color:#999;
@@ -119,4 +128,35 @@ a.active,a.active:visited{
     display: flex;
     justify-content: space-between;
     border-bottom:1px solid #ddd;
+}
+
+.form-actions{
+    display: flex;
+    align-items: center;
+}
+.form-actions > *{
+    margin-right: 1rem;
+
+}
+.form-input{
+    display: flex;
+    flex:1;
+    align-items: center;
+}
+
+.form-input-label{
+    min-width: 5rem;
+}
+.form-input-error{
+    color:#C00;
+    font-size: 0.8rem;
+    padding-left:0.5rem;
+}
+.form-input > input{
+    padding:0.5rem;
+    border:1px solid #333;
+    border-radius: 0.25rem;
+}
+.form-input.form-input-wide > input{
+    min-width: 10rem;
 }
