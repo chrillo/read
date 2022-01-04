@@ -1,5 +1,5 @@
 import { FeedItem } from "@prisma/client"
-import { Form, useFetcher } from "remix"
+import { useCallback, useState } from "react"
 import { relativeTime } from "~/utils/relativeTime"
 
 
@@ -10,9 +10,23 @@ const getDomain = (link?:string)=>{
 
 export const FeedListItem = ({item}:{item:FeedItem})=>{
 
-    let fetcher = useFetcher();
+    const [read,setRead] = useState(false)
+    const [submission,setSubmission] = useState(false)
 
-    if(fetcher.submission) return null;
+    const markAsRead = useCallback(async()=>{
+        setSubmission(true)
+        setRead(true)
+        try{
+            await fetch(`/item/${item.id}/read`,{method:'post'})
+        }catch(e){
+            console.error(e)
+            setRead(false)
+        }
+        setSubmission(false)
+     
+    },[item])
+
+    if(read) return null
 
     return <div className="feed-item" key={item.id}>
         <div className="feed-item-content">
@@ -22,18 +36,9 @@ export const FeedListItem = ({item}:{item:FeedItem})=>{
                 <span className="time">{relativeTime(item.createdAt)}</span>
                 {item.commentsUrl ? <a className="comments" target="_blank" href={item.commentsUrl}>Comments</a> : null}
             </div>
-            {/* <small dangerouslySetInnerHTML={{__html:item.content}}></small> */}
         </div>
         <div className="feed-item-actions">
-            
-            <fetcher.Form method="post" action={`/item/${item.id}/read`}>
-                <input 
-                    className="button"
-                    //disabled={fetcher.state === "submitting"}
-                    type={"submit"} 
-                    value="Read" />
-            </fetcher.Form>
+            <button disabled={submission} className="button" onClick={markAsRead}>Read</button>
         </div>
-       
     </div>
 }

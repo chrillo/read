@@ -59,9 +59,7 @@ export const updateFeedItem = async(itemId:string, data:Partial<FeedItem>)=>{
         where:{
             id:itemId
         },
-        data:{
-            read:true
-        }
+        data
     })
     return feedItem
 }
