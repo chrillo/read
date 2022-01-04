@@ -63,8 +63,12 @@ export const updateFeedItem = async(itemId:string, data:Partial<FeedItem>)=>{
     })
     return feedItem
 }
-export const getFeedItems = async()=>{
-    return await db.feedItem.findMany({orderBy:{createdAt:'desc'},where:{read:false}})
+export const getFeedItemsWithCount = async()=>{
+    const [items,count] = await Promise.all([
+        db.feedItem.findMany({orderBy:{createdAt:'desc'},where:{read:false}}),
+        db.feedItem.count({orderBy:{createdAt:'desc'},where:{read:false}})
+    ])
+    return {items,count}
 }
 
 const getGuid = (remoteItem:({id: string

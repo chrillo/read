@@ -2,10 +2,12 @@ import { FeedItem } from "@prisma/client"
 import { FeedListItem } from "./feedListItem"
 
 
-export const FeedList = ({items}:{items:FeedItem[]})=>{
+export const FeedList = ({items,markAsRead}:{items:FeedItem[],markAsRead:(item:FeedItem)=>Promise<FeedItem>})=>{
     return <div className="feed-item-list">
-    {items.map((item)=>{
-      return <FeedListItem item={item} key={item.id} />
-    })}
+    <div className="feed-items">
+      {items.map((item)=>{
+        return <FeedListItem markAsRead={markAsRead} item={item} key={item.id} />
+      })}
+    </div>
   </div>
 }

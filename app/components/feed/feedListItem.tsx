@@ -8,25 +8,17 @@ const getDomain = (link?:string)=>{
     return new URL(link).hostname.replace('www.','')
 }
 
-export const FeedListItem = ({item}:{item:FeedItem})=>{
+export const FeedListItem = ({item,markAsRead}:{item:FeedItem,markAsRead:(item:FeedItem)=>Promise<FeedItem>})=>{
 
-    const [read,setRead] = useState(false)
     const [submission,setSubmission] = useState(false)
 
-    const markAsRead = useCallback(async()=>{
+    const onMarkAsRead = useCallback(async()=>{
         setSubmission(true)
-        setRead(true)
-        try{
-            await fetch(`/item/${item.id}/read`,{method:'post'})
-        }catch(e){
-            console.error(e)
-            setRead(false)
-        }
+        await markAsRead(item)
         setSubmission(false)
-     
     },[item])
 
-    if(read) return null
+    if(item.read) return null
 
     return <div className="feed-item" key={item.id}>
         <div className="feed-item-content">
@@ -38,7 +30,7 @@ export const FeedListItem = ({item}:{item:FeedItem})=>{
             </div>
         </div>
         <div className="feed-item-actions">
-            <button disabled={submission} className="button" onClick={markAsRead}>Read</button>
+            <button disabled={submission} className="button" onClick={onMarkAsRead}>Read</button>
         </div>
     </div>
 }
