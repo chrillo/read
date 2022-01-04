@@ -14,7 +14,7 @@ export default function FeedsList(){
         <PageActions><Link className="button" to="new">New Feed Source</Link></PageActions>
         {data.map((feed)=>{
             return <div key={feed.id} className="feed-source">
-                <Link to={`${feed.id}`}>{feed.title}</Link>
+                <Link to={`${feed.id}`}>{feed.active ? '' :'disabled: '}{feed.title}</Link>
                 {' '}
                 <a target="_blank" href={feed.url}>{feed.url}</a>
             </div>

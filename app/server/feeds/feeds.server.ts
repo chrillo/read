@@ -21,7 +21,7 @@ export const validateFeedUrl = async({url}:{url:string})=>{
     const feed = await parser.parseURL(url) 
     return feed
 }
-export const updateFeedSource = async(id:string, data:{title:string,url:string})=>{
+export const updateFeedSource = async(id:string, data:{title:string,url:string,active?:boolean})=>{
     return await db.feedSource.update({where:{id},data})
 }
 export const createFeedSource = async({title,url}:{title:string,url:string})=>{

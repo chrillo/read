@@ -1,4 +1,4 @@
-import { isString } from "./typeGuards";
+import { isBoolean, isString } from "./typeGuards";
 
 
 

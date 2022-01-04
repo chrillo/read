@@ -10,7 +10,7 @@ import { useRevalidateOnFocus } from "~/utils/revalidateOnFocus";
 
 export const loader:LoaderFunction = async():Promise<FeedItem[]>=>{
 
-  return getFeedItems()//await db.feedItem.findMany({orderBy:{createdAt:'desc'},include:{source:true},where:{read:false}})
+  return getFeedItems()
   
 }
 
