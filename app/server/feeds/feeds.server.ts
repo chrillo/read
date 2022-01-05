@@ -65,8 +65,8 @@ export const updateFeedItem = async(itemId:string, data:Partial<FeedItem>)=>{
 }
 export const getFeedItemsWithCount = async()=>{
     const [items,count] = await Promise.all([
-        db.feedItem.findMany({orderBy:{createdAt:'desc'},where:{read:false}}),
-        db.feedItem.count({orderBy:{createdAt:'desc'},where:{read:false}})
+        db.feedItem.findMany({orderBy:{createdAt:'desc'},where:{read:false,delivered:true}}),
+        db.feedItem.count({orderBy:{createdAt:'desc'},where:{read:false,delivered:true}})
     ])
     return {items,count}
 }
@@ -89,6 +89,29 @@ const getFeedParser = ()=>{
         item: ['hn:comments','id'],
     }
     });
+}
+
+export const deliverItems = async()=>{
+    const now = new Date()
+    const utcHour = now.getUTCHours() 
+    console.log('utc hour',utcHour)
+    const deliveries = await db.feedDelivery.findMany({where:{utcHour}}) 
+    console.log('potential deliveries',deliveries.length)
+    const deliveriesToBeMade = deliveries.filter((delivery)=>{
+        // we only want to run deliveries which were delivered at least their interval ago
+        return delivery.lastDeliveredAt <= new Date(Date.now() - delivery.intervalHours * 3600 * 1000)
+    })
+    console.log('deliveries to be made',deliveriesToBeMade.length)
+    return await promiseMap(deliveriesToBeMade, async(delivery)=>{
+        // TODO: scoping of deliveries
+        console.log('run delivery',delivery)
+        const [items, updatedDelivery] = await db.$transaction([
+            db.feedItem.updateMany({where:{delivered:false},data:{delivered:true}}),
+            db.feedDelivery.update({where:{id:delivery.id}, data:{lastDeliveredAt:new Date()}}),
+        ])
+        console.log('updated items',items)
+        return updatedDelivery
+    },{concurrency:1})
 }
 
 export const syncFeed = async(feedId:string)=>{
@@ -121,18 +144,18 @@ export const syncFeed = async(feedId:string)=>{
                     commentsUrl: remoteItem['hn:comments'] || null,
                     content:'',
                     sourceId:feed?.id,
-                    guid,
+                    guid
                 }
                 const existingItem = existingMap[guid]
                 if(!existingItem){
-                    agg.creates.push({...item, read:false})
+                    agg.creates.push({...item, read:false, delivered:false})
                 }else if(existingItem && isItemChanged(existingItem,item)){
-                    agg.updates.push(db.feedItem.update({where:{id:existingItem.id},data:item}))
+                    agg.updates.push({where:{id:existingItem.id},data:item})
                 }
               
             return agg
         },{updates:[],creates:[]} as {
-            updates:(Prisma.Prisma__FeedItemClient<FeedItem>)[],
+            updates:Prisma.FeedItemUpdateArgs[],
             creates:Prisma.FeedItemCreateInput[]
         });
         const writeStart = Date.now()
@@ -140,7 +163,10 @@ export const syncFeed = async(feedId:string)=>{
             await db.feedItem.createMany({data:creates})
         }
         if(updates.length){
-            await db.$transaction(updates)
+            await db.$transaction(updates.map((input)=>db.feedItem.update(input)))
+        }
+        if(updates.length || creates.length){
+            await db.feedSource.update({where:{id:feed.id},data:{updatedAt:new Date()}})
         }
         console.log('updates written',feed.title, 'took',Date.now() - writeStart,updates.length,creates.length)
        

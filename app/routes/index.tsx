@@ -39,7 +39,7 @@ export default function Index() {
   const {items,markAsRead,count} = useFeedItems()
   return (
     <Page>
-        {items.length ? <FeedList items={items} markAsRead={markAsRead} ></FeedList> : <FeedListEmpty/>}
+        {count > 0 ? <FeedList items={items} markAsRead={markAsRead} ></FeedList> : <FeedListEmpty/>}
         <div className="feed-item-count">{count}</div>
     </Page>
   );

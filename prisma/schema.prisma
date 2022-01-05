@@ -29,6 +29,18 @@ model FeedSource {
   updatedAt  DateTime @updatedAt
 }
 
+model FeedDelivery {
+  id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  utcHour Int
+  intervalHours Int
+  lastDeliveredAt DateTime
+  active Boolean
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([utcHour])
+}
+
 model FeedItem {
   id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
   guid  String  @unique
@@ -38,6 +50,7 @@ model FeedItem {
   author String?
   commentsUrl String?
   read Boolean
+  delivered Boolean @default(false)
   sourceId String?
   source  FeedSource? @relation(fields: [sourceId], references: [id])
   createdAt  DateTime @default(now())
@@ -45,6 +58,8 @@ model FeedItem {
 
   @@unique([guid])
 
-  @@index([read, createdAt(sort: Desc)])
+  @@index([delivered])
+
+  @@index([read,delivered, createdAt(sort: Desc)])
 }
 
