@@ -2,11 +2,11 @@ import type { LoaderFunction } from "remix";
 import { getFrontPageItems } from "~/server/feeds/hackernews.server";
 
 
-function escapeCdata(s: string) {
+function escapeCdata(s: string = '') {
   return s.replaceAll("]]>", "]]]]><![CDATA[>");
 }
 
-function escapeHtml(s: string) {
+function escapeHtml(s: string = '') {
   return s
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
