@@ -29,10 +29,10 @@ app.all(
 
 const port = process.env.PORT || 3000
 
-setInterval(async function(){
-   const res = await fetch(`http://localhost:${port}/cron`)
-   const json = await res.json()
-   console.log('cron took',json.time)
-},5 * 60 * 1000)
+// setInterval(async function(){
+//    const res = await fetch(`http://localhost:${port}/cron`)
+//    const json = await res.json()
+//    console.log('cron took',json.time)
+// },5 * 60 * 1000)
 
 app.listen(port)
