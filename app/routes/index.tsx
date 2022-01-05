@@ -4,7 +4,7 @@ import { getFeedItemsWithCount } from "~/server/feeds/feeds.server";
 import { FeedListEmpty } from "~/components/feed/feedListEmpty";
 import { Page } from "~/components/app/page";
 import { FeedItem } from "@prisma/client";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type LoaderData ={
   items:FeedItem[],
@@ -16,10 +16,8 @@ export const loader:LoaderFunction = async():Promise<LoaderData>=>{
 }
 
 const useFeedItems = ()=>{
-  let {items,count:itemCount} = useLoaderData<LoaderData>()
-
+  const {items,count:itemCount} = useLoaderData<LoaderData>()
   const [count,setCount] = useState(itemCount)
-  
   // not doing this the remix way to avoid refetching the entire fire when one item is marked as read
   const markAsRead = useCallback(async(item)=>{
     item.read = true
@@ -32,8 +30,8 @@ const useFeedItems = ()=>{
         setCount(count+1)
     }
     return item
-  },[count])
-
+  },[count,setCount])
+  
   return {items,count,markAsRead}
 }
 

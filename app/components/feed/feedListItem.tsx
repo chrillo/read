@@ -16,7 +16,7 @@ export const FeedListItem = ({item,markAsRead}:{item:FeedItem,markAsRead:(item:F
         setSubmission(true)
         await markAsRead(item)
         setSubmission(false)
-    },[item])
+    },[item,markAsRead])
 
     if(item.read) return null
 
