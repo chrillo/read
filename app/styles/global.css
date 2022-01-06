@@ -1,4 +1,23 @@
 
+:root {
+    --text: #000;
+    --meta: #999; 
+    --background: #fff;
+    --border: #ddd;
+    --error: #900;
+    --border-dark:#333;
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text: #FFF;
+        --meta: #aaa; 
+        --background: #111;
+        --border: #333;
+        --error: #900;
+        --border-dark:#666;
+    }
+}
+
 *{
     font-family: system-ui, sans-serif;
     margin:0;
@@ -7,17 +26,17 @@
 html,body{
     line-height: 1.5;
     
-    background: #fff;
+    background: var(--background);
 }
 a{
-    color:#000;
+    color:var(--text);
     text-decoration: none;
 }
 a:hover{
     text-decoration: underline;
 }
 a.active{
-    color:#000;
+    color:var(--text);
     font-weight: bold;
 }
 
@@ -55,7 +74,7 @@ a.active{
 @media (max-width: 72rem) { 
     .navigation{
        
-        background: #fff;
+        background: var(--background);
     }
 }
 
@@ -81,7 +100,7 @@ a.active{
     flex:1;
     justify-content: center;
     align-items: center;
-    color:#ccc;
+    color:var(--border);
     min-height: 50vh;
     font-size: 3rem;
     font-weight: bold;
@@ -91,25 +110,25 @@ a.active{
     margin-bottom: 0.5rem;
     display: flex;
     justify-content: space-between;
-    border-top:1px solid #ddd;
+    border-top:1px solid var(--border);
     padding:0.5rem;
-    background:#fff;
+    background:var(--background);
 }
 .feed-item .title{
     flex:1;
 }
 .feed-item a:visited{
 
-        color:#999;
+        color:var(--meta);
    
 }
 .feed-item .comments{
     font-size: 0.8rem;
-    color:#999;
+    color:var(--meta);
 }
 .feed-item .time{
     font-size: 0.8rem;
-    color:#999;
+    color:var(--meta);
 }
 .feed-item-content{
     flex:1;
@@ -132,37 +151,37 @@ a.active{
 .button{
    padding:0.5rem;
    border-radius: 3px;
-   background:#fff;
+   background:var(--background);
    color:#000;
-   border:1px solid #333;
+   border:1px solid var(--border-dark);
    -webkit-appearance: none;
    appearance: none; 
    cursor: pointer;
 }
 .button:visited{
-    color:#000;
+    color:var(--text);
 }
 .button:hover{
-    background:#ddd;
+    background:var(--border);
 
     text-decoration: none;
 }
 .feed-item .source{
-    color:#999;
+    color:var(--meta);
     font-size: 0.8rem;
 }
 
 .feed-source{
     padding:0.25rem 0 1rem 0;
     
-    border-bottom:1px solid #ddd;
+    border-bottom:1px solid var(--border);
 }
 .feed-source-content{
     display: flex;
     justify-content: space-between;
 }
 .feed-source-meta{
-    color:#999;
+    color:var(--meta);
     font-size:0.8rem;
 }
 
@@ -187,14 +206,14 @@ a.active{
     min-width: 5rem;
 }
 .form-input-error{
-    color:#C00;
+    color:var(--error);
     font-size: 0.8rem;
     padding-left:0.5rem;
 }
 .form-input > input{
     display: inline-block;
     padding:0.5rem;
-    border:1px solid #333;
+    border:1px solid var(--border-dark);
     border-radius: 0.25rem;
 }
 .form-input.form-input-wide > input{
