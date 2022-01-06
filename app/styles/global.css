@@ -79,7 +79,7 @@ a.active{
 }
 
 .feed-item-count{
-    color:#000;
+    color:var(--text);
     position: fixed;
     right:0;
     top:0;
