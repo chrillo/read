@@ -1,5 +1,5 @@
 import { json } from "remix";
-import { deliverItems, syncFeeds } from "~/server/feeds/feeds.server";
+import { deliverItems, syncFeeds } from "~/server/feed/feed.server";
 
 
 export async function loader() {

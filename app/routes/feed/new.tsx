@@ -4,7 +4,7 @@ import { FormActions } from "~/components/form/formActions";
 import { FormSubmit } from "~/components/form/formButton";
 import { FormCheckbox } from "~/components/form/formCheckbox";
 import { FormInput } from "~/components/form/formInput";
-import { createFeedSource, validateFeedUrl } from "~/server/feeds/feeds.server";
+import { createFeedSource, validateFeedUrl } from "~/server/feed/feed.server";
 import { isString } from "~/utils/typeGuards";
 import { getValues } from "~/utils/validation";
 

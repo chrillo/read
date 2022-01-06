@@ -1,5 +1,5 @@
 import { ActionFunction, json } from "remix";
-import { updateFeedItem } from "~/server/feeds/feeds.server";
+import { updateFeedItem } from "~/server/feed/feed.server";
 
 export const action:ActionFunction = async({request,params})=>{
 

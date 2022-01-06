@@ -29,7 +29,9 @@ export const getHackerNewsItem = async(id:number):Promise<FeedItem | null>=>{
             updatedAt: new Date(item.time * 1000),
             read:false,
             sourceId: null,
-            id: item.id
+            delivered: false,
+            id: item.id,
+          
         }
     }catch(e){
         console.error('could not fetch item',id,e)

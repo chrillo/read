@@ -1,4 +1,4 @@
-import { FeedItem, FeedSource, Prisma, prisma } from "@prisma/client";
+import { FeedDelivery, FeedItem, FeedSource, Prisma, prisma } from "@prisma/client";
 import { db } from "../db.server";
 import RssParser from 'rss-parser';
 import { promiseMap } from "~/utils/promiseMap";
@@ -41,6 +41,26 @@ export const getActiveFeedSources = async()=>{
 }
 
 
+export const createFeedDelivery = async({utcHour,intervalHours,active, activeDays}:{intervalHours:number, utcHour:number,active?:boolean,activeDays:number[]})=>{
+    return db.feedDelivery.create({data:{
+        utcHour,
+        intervalHours,
+        active:active ? true : false,
+        activeDays,
+        lastDeliveredAt:null
+    }})
+}
+export const getFeedDeliveries = async()=>{
+    return await db.feedDelivery.findMany()
+}
+export const updateFeedDelivery = async(id:string, data:Partial<FeedDelivery>)=>{
+    return db.feedDelivery.update({where:{id},data})
+}
+export const getFeedDelivery = async(id:string)=>{
+    return db.feedDelivery.findUnique({where:{id}})
+}
+
+
 export const syncFeeds = async()=>{
     const start = Date.now()
     const feeds = await getActiveFeedSources()
@@ -54,14 +74,13 @@ export const syncFeeds = async()=>{
     }
 }
 
-export const updateFeedItem = async(itemId:string, data:Partial<FeedItem>)=>{
-    const feedItem = await db.feedItem.update({
+export const updateFeedItem = async(id:string, data:Partial<FeedItem>)=>{
+    return db.feedItem.update({
         where:{
-            id:itemId
+            id
         },
         data
     })
-    return feedItem
 }
 export const getFeedItemsWithCount = async()=>{
     const [items,count] = await Promise.all([
@@ -99,7 +118,7 @@ export const deliverItems = async()=>{
     console.log('potential deliveries',deliveries.length)
     const deliveriesToBeMade = deliveries.filter((delivery)=>{
         // we only want to run deliveries which were delivered at least their interval ago
-        return delivery.lastDeliveredAt <= new Date(Date.now() - delivery.intervalHours * 3600 * 1000)
+        return delivery.lastDeliveredAt && delivery.lastDeliveredAt <= new Date(Date.now() - delivery.intervalHours * 3600 * 1000)
     })
     console.log('deliveries to be made',deliveriesToBeMade.length)
     return await promiseMap(deliveriesToBeMade, async(delivery)=>{

@@ -1,7 +1,7 @@
 import { FeedSource } from "@prisma/client"
 import { Link, useLoaderData } from "remix"
 import { Page, PageActions } from "~/components/app/page"
-import { getFeedSources } from "~/server/feeds/feeds.server"
+import { getFeedSources } from "~/server/feed/feed.server"
 import { relativeTime } from "~/utils/relativeTime"
 
 
