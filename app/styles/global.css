@@ -31,6 +31,7 @@ a.active,a.active:visited{
 .page-content{
     max-width: 60rem;
     margin:auto;
+    padding-top:3rem;
 }
 .page-actions{
     display: flex;
@@ -74,7 +75,7 @@ a.active,a.active:visited{
     font-size: 0.8rem;
 }
 .feed-item-list{
-    padding-top:3rem;
+  
 }
 .feed-item-list-empty{
     width:100%;
