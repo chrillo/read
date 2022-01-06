@@ -173,7 +173,9 @@ export const syncFeed = async(feedId:string)=>{
         console.log('feed updated',feed.title,'took in total',Date.now() - start,'ms, updates: ',updates.length)
     }catch(e){
         console.error("error syncing feed",feedId)
-        console.error(e)
+        if(e instanceof Error){
+            console.error(e.message)
+        }
     } 
    
 }
