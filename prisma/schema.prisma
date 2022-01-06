@@ -27,6 +27,8 @@ model FeedSource {
   active Boolean
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+   @@index([updatedAt(sort: Desc)])
 }
 
 model FeedDelivery {

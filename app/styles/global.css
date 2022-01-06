@@ -16,10 +16,7 @@ a{
 a:hover{
     text-decoration: underline;
 }
-a:visited{
-    color:#999;
-}
-a.active,a.active:visited{
+a.active{
     color:#000;
     font-weight: bold;
 }
@@ -101,6 +98,11 @@ a.active,a.active:visited{
 .feed-item .title{
     flex:1;
 }
+.feed-item a:visited{
+
+        color:#999;
+   
+}
 .feed-item .comments{
     font-size: 0.8rem;
     color:#999;
@@ -152,23 +154,33 @@ a.active,a.active:visited{
 
 .feed-source{
     padding:0.25rem 0 1rem 0;
+    
+    border-bottom:1px solid #ddd;
+}
+.feed-source-content{
     display: flex;
     justify-content: space-between;
-    border-bottom:1px solid #ddd;
+}
+.feed-source-meta{
+    color:#999;
+    font-size:0.8rem;
 }
 
 .form-actions{
     display: flex;
     align-items: center;
+    padding: 1rem 0;
 }
 .form-actions > *{
     margin-right: 1rem;
+    
 
 }
-.form-input{
+.form-input,.form-checkbox{
     display: flex;
     flex:1;
     align-items: center;
+    margin-bottom: 1rem;
 }
 
 .form-input-label{
@@ -180,10 +192,11 @@ a.active,a.active:visited{
     padding-left:0.5rem;
 }
 .form-input > input{
+    display: inline-block;
     padding:0.5rem;
     border:1px solid #333;
     border-radius: 0.25rem;
 }
 .form-input.form-input-wide > input{
-    min-width: 10rem;
+    min-width: 25rem;
 }

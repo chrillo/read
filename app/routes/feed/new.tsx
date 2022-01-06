@@ -30,8 +30,8 @@ export const validateFeedSourceInput = async(formData:FormData)=>{
 
 export const FeedSourceForm = ({errors,defaultValues}:{errors?:{[key:string]:string},defaultValues?:{[key:string]:string | boolean}})=>{
    return <Form method="post">
-    <p><FormInput name="title" label="Title:" defaultValue={defaultValues?.title as string} error={errors?.title} /></p>
-    <p><FormInput name="url" label="Url:" defaultValue={defaultValues?.url as string} error={errors?.url} /></p>
+    <p><FormInput wide name="title" label="Title:" defaultValue={defaultValues?.title as string} error={errors?.title} /></p>
+    <p><FormInput wide name="url" label="Url:" defaultValue={defaultValues?.url as string} error={errors?.url} /></p>
     <p><FormCheckbox name="active" label="active" defaultValue={defaultValues?.active as boolean} /></p>
     <FormActions>
         <FormSubmit label="Save" />

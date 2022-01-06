@@ -10,7 +10,7 @@ const getSHA256 = (input:object)=>{
 }
 
 export const getFeedSources = async()=>{
-    return await db.feedSource.findMany()
+    return await db.feedSource.findMany({orderBy:{updatedAt:'desc'}})
 }
 export const getFeedSource = async({id}:{id:string})=>{
     return await db.feedSource.findUnique({where:{id}})
