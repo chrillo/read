@@ -152,7 +152,7 @@ a.active{
    padding:0.5rem;
    border-radius: 3px;
    background:var(--background);
-   color:#000;
+   color:var(--text);
    border:1px solid var(--border-dark);
    -webkit-appearance: none;
    appearance: none; 
@@ -204,6 +204,7 @@ a.active{
 
 .form-input-label{
     min-width: 5rem;
+    color:var(--text);
 }
 .form-input-error{
     color:var(--error);
@@ -215,6 +216,9 @@ a.active{
     padding:0.5rem;
     border:1px solid var(--border-dark);
     border-radius: 0.25rem;
+    color:var(--text);
+    background: var(--background);
+    border:1px solid var(--border);
 }
 .form-input.form-input-wide > input{
     min-width: 25rem;
