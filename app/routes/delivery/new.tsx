@@ -51,7 +51,7 @@ export const action:ActionFunction = async({request})=>{
 
     const feedSource = await createFeedDelivery(values)
 
-    return redirect(`/feed`)
+    return redirect(`/delivery`)
 }
 
 export const loader = ()=>{

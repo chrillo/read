@@ -6,8 +6,8 @@ import { FeedDeliveryForm, validateFeedDeliveryInput } from "./new"
 
 
 export const action:ActionFunction = async({request,params})=>{
-    const {feedId} = params
-    if(!feedId) return json({errors:{id:'id s required'}})
+    const {deliveryId} = params
+    if(!deliveryId) return json({errors:{id:'id is required'}})
     const formData  = await request.formData()
     const {values,errors} = await validateFeedDeliveryInput(formData)
 
@@ -16,7 +16,7 @@ export const action:ActionFunction = async({request,params})=>{
         return json({errors,values})
     }
     
-    await updateFeedDelivery(feedId,values)
+    await updateFeedDelivery(deliveryId,values)
 
     return redirect(`/delivery`)
  

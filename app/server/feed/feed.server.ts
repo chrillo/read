@@ -117,8 +117,15 @@ export const deliverItems = async()=>{
     const deliveries = await db.feedDelivery.findMany({where:{utcHour}}) 
     console.log('potential deliveries',deliveries.length)
     const deliveriesToBeMade = deliveries.filter((delivery)=>{
+        if(!delivery.lastDeliveredAt) return false
+        const ts = now.getTime()
+        const threshold = new Date((ts - (ts % 3600000)) - delivery.intervalHours * 3600 * 1000)
+        const lastDeliveryTs = delivery.lastDeliveredAt.getTime()
+        const lastDelivery = new Date((lastDeliveryTs- (lastDeliveryTs % 3600000)))
+        
+        console.log('check delivery',lastDelivery,threshold)
         // we only want to run deliveries which were delivered at least their interval ago
-        return delivery.lastDeliveredAt && delivery.lastDeliveredAt <= new Date(Date.now() - delivery.intervalHours * 3600 * 1000)
+        return lastDelivery <= threshold
     })
     console.log('deliveries to be made',deliveriesToBeMade.length)
     return await promiseMap(deliveriesToBeMade, async(delivery)=>{
