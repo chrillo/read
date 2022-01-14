@@ -41,7 +41,7 @@ model FeedDelivery {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  @@index([utcHour])
+  @@index([utcHour,activeDays,active])
 }
 
 model FeedItem {

@@ -6,23 +6,27 @@ import { FormSubmit } from "~/components/form/formButton";
 import { FormCheckbox } from "~/components/form/formCheckbox";
 import { FormInput } from "~/components/form/formInput";
 import { createFeedDelivery, createFeedSource, validateFeedUrl } from "~/server/feed/feed.server";
+import { formatDayOfWeek } from "~/utils/format";
 import { isString } from "~/utils/typeGuards";
-import { getValues } from "~/utils/validation";
+import { getCheckbox, getInt, getString, getStringArray, getValues } from "~/utils/validation";
 
 
 export const validateFeedDeliveryInput = async(formData:FormData)=>{
-    const values = getValues(formData)
-    const {utcHour,intervalHours,active,activeDays} = values
-    
-    const errors = {} as {[key:string]:string}
-    if(!utcHour) errors.title = "Hour is required"
-    if(!intervalHours) errors.url = "interval is required"
+    console.log(formData)
+    const active = getCheckbox(formData,'active')
+    const utcHour = getInt(formData,'utcHour')
+    const intervalHours = getInt(formData,'intervalHours')
+    const activeDays = getStringArray(formData,'activeDays')
+
+    const errors = {} as Record<string,string>
+    if(utcHour < 0 || utcHour > 23) errors.utcHour = "Enter a value between 0 - 23"
+    if(intervalHours < 1) errors.intervalHours = "Enter a number greater than 1"
 
     return {errors,values:{
-        utcHour:parseInt(utcHour, 10),
-        intervalHours:parseInt(intervalHours,10),
-        active:active === 'on' ? true : false,
-        activeDays:[] // TODO parse active days
+        utcHour,
+        intervalHours,
+        active,
+        activeDays:activeDays.map(Number)
     }}
 }
 
@@ -30,6 +34,11 @@ export const FeedDeliveryForm = ({errors,defaultValues}:{errors?:{[key:string]:s
    return <Form method="post">
     <p><FormInput name="utcHour" label="Hour:" defaultValue={defaultValues?.utcHour} error={errors?.title} /></p>
     <p><FormInput name="intervalHours" label="Interval:" defaultValue={defaultValues?.intervalHours} error={errors?.url} /></p>
+    
+    {[1,2,3,4,5,6,0].map((day)=>{
+        return <p key={day}><FormCheckbox value={day+''} name="activeDays" label={formatDayOfWeek(day)} defaultValue={defaultValues?.activeDays?.includes(day)} /></p>
+    })}
+
     <p><FormCheckbox name="active" label="Active:" defaultValue={defaultValues?.active} /></p>
     <FormActions>
         <FormSubmit label="Save" />

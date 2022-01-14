@@ -6,14 +6,15 @@ import { FormCheckbox } from "~/components/form/formCheckbox";
 import { FormInput } from "~/components/form/formInput";
 import { createFeedSource, validateFeedUrl } from "~/server/feed/feed.server";
 import { isString } from "~/utils/typeGuards";
-import { getValues } from "~/utils/validation";
+import { getCheckbox, getString, getValues } from "~/utils/validation";
 
 
 export const validateFeedSourceInput = async(formData:FormData)=>{
-    const values = getValues(formData)
-    const {title,url,active} = values
+    const title = getString(formData,'title')
+    const url = getString(formData,'url')
+    const active = getCheckbox(formData,'active')
     
-    const errors = {} as {[key:string]:string}
+    const errors = {} as Record<string,string>
     if(!title) errors.title = "Title is required"
     if(!url) errors.url = "Url is required"
 
@@ -25,7 +26,7 @@ export const validateFeedSourceInput = async(formData:FormData)=>{
         if (error instanceof Error)  errors.url = error.message
     }
 
-    return {errors,values:{title, url,active:active === 'on' ? true : false }}
+    return {errors,values:{title, url,active}}
 }
 
 export const FeedSourceForm = ({errors,defaultValues}:{errors?:{[key:string]:string},defaultValues?:{[key:string]:string | boolean}})=>{

@@ -113,13 +113,16 @@ const getFeedParser = ()=>{
 export const deliverItems = async()=>{
     const now = new Date()
     const utcHour = now.getUTCHours() 
-    console.log('utc hour',utcHour)
-    const deliveries = await db.feedDelivery.findMany({where:{utcHour}}) 
+    const day = now.getDay()
+    console.log('utc hour',utcHour,day)
+    const deliveries = await db.feedDelivery.findMany({where:{utcHour,activeDays:{has:day},active:true}}) 
     console.log('potential deliveries',deliveries.length)
     const deliveriesToBeMade = deliveries.filter((delivery)=>{
-        if(!delivery.lastDeliveredAt) return false
+
+        if(!delivery.lastDeliveredAt) return true
+        // TODO: handle timezones here
         const ts = now.getTime()
-        const threshold = new Date((ts - (ts % 3600000)) - delivery.intervalHours * 3600 * 1000)
+        const threshold = new Date((ts - (ts % 3600000)) - delivery.intervalHours * 3600000)
         const lastDeliveryTs = delivery.lastDeliveredAt.getTime()
         const lastDelivery = new Date((lastDeliveryTs- (lastDeliveryTs % 3600000)))
         
