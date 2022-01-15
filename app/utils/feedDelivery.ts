@@ -5,13 +5,17 @@ import { zonedTimeToUtc } from 'date-fns-tz';
 export const getNextDelivery = (delivery: FeedDelivery, now: Date = new Date()): Date => {
 	const { hour, timeZone, lastDeliveredAt, activeDays } = delivery;
 
-	const date = lastDeliveredAt ? new Date(lastDeliveredAt) : new Date();
-
+	const date = new Date();
 	date.setHours(hour);
 	date.setSeconds(0);
 	date.setMilliseconds(0);
 	date.setMinutes(0);
+
 	let nextDelivery = zonedTimeToUtc(date, timeZone);
+
+	if (lastDeliveredAt && nextDelivery < lastDeliveredAt) {
+		nextDelivery = addDays(nextDelivery, 1);
+	}
 
 	if (nextDelivery < now) {
 		nextDelivery = addDays(nextDelivery, 1);
