@@ -1,13 +1,10 @@
-import { FeedDelivery, FeedItem, FeedSource, Prisma, prisma } from '@prisma/client';
+import { FeedDelivery, FeedItem, Prisma } from '@prisma/client';
 import { db } from '../db.server';
 import RssParser from 'rss-parser';
 import { promiseMap } from '~/utils/promiseMap';
 import crypto from 'crypto';
 import { isString } from '~/utils/typeGuards';
 import { getNextDelivery } from '~/utils/feedDelivery';
-
-const HOUR_IN_MS = 3600 * 1000;
-const DAY_IN_MS = 24 * 3600 * 1000;
 
 const getSHA256 = (input: object) => {
 	return crypto.createHash('sha256').update(JSON.stringify(input)).digest('hex');
@@ -86,7 +83,7 @@ export const getFeedDelivery = async (id: string) => {
 export const syncFeeds = async () => {
 	const start = Date.now();
 	const feeds = await getActiveFeedSources();
-	for (let index in feeds) {
+	for (const index in feeds) {
 		await syncFeed(feeds[index].id);
 	}
 	const time = Date.now() - start;
