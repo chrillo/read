@@ -1,12 +1,10 @@
-import { ActionFunction, json } from "remix";
-import { updateFeedItem } from "~/server/feed/feed.server";
+import { ActionFunction, json } from 'remix';
+import { updateFeedItem } from '~/server/feed/feed.server';
 
-export const action:ActionFunction = async({request,params})=>{
-
-    const {itemId} = params
-    if(!itemId){
-        return null
-    }
-    return json(await updateFeedItem(itemId, {read:true}))
-}
-
+export const action: ActionFunction = async ({ request, params }) => {
+	const { itemId } = params;
+	if (!itemId) {
+		return null;
+	}
+	return json(await updateFeedItem(itemId, { read: true }));
+};

@@ -1,25 +1,20 @@
-import { useCallback, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function useRevalidateOnFocus() {
-  let navigate = useNavigate();
+	let navigate = useNavigate();
 
-  const onFocus = useCallback(()=>{
-    if(!document.hidden){
-        navigate(".", { replace: true });
-    }
-  },[navigate])
+	const onFocus = useCallback(() => {
+		if (!document.hidden) {
+			navigate('.', { replace: true });
+		}
+	}, [navigate]);
 
-  useEffect(()=>{
-    
-    document.addEventListener("visibilitychange",onFocus)
+	useEffect(() => {
+		document.addEventListener('visibilitychange', onFocus);
 
-    return ()=>{
-        document.removeEventListener("visibilitychange",onFocus)
-    }
-
-  },[onFocus]);
-
-
+		return () => {
+			document.removeEventListener('visibilitychange', onFocus);
+		};
+	}, [onFocus]);
 }
