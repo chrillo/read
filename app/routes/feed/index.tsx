@@ -25,7 +25,7 @@ export default function FeedsList() {
 								{feed.active ? '' : 'disabled: '}
 								{feed.title}
 							</Link>
-							<a target="_blank" href={feed.url}>
+							<a target="_blank" href={feed.url} rel="noreferrer">
 								{feed.url}
 							</a>
 						</div>

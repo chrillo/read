@@ -1,6 +1,5 @@
 import {
 	Links,
-	LinksFunction,
 	LiveReload,
 	Meta,
 	Outlet,
@@ -9,9 +8,7 @@ import {
 	useLoaderData,
 } from 'remix';
 import type { MetaFunction } from 'remix';
-
 import styles from '~/styles/global.css';
-// styles is now something like /build/global-AE33KB2.css
 
 export function links() {
 	return [{ rel: 'stylesheet', href: styles }];

@@ -5,8 +5,7 @@ import { FormSubmit } from '~/components/form/formButton';
 import { FormCheckbox } from '~/components/form/formCheckbox';
 import { FormInput } from '~/components/form/formInput';
 import { createFeedSource, validateFeedUrl } from '~/server/feed/feed.server';
-import { isString } from '~/utils/typeGuards';
-import { getCheckbox, getString, getValues } from '~/utils/validation';
+import { getCheckbox, getString } from '~/utils/validation';
 
 export const validateFeedSourceInput = async (formData: FormData) => {
 	const title = getString(formData, 'title');
@@ -19,7 +18,7 @@ export const validateFeedSourceInput = async (formData: FormData) => {
 
 	try {
 		if (url) {
-			const feed = await validateFeedUrl({ url });
+			await validateFeedUrl({ url });
 		}
 	} catch (error) {
 		if (error instanceof Error) errors.url = error.message;
@@ -79,7 +78,7 @@ export const action: ActionFunction = async ({ request }) => {
 		return json({ errors, values });
 	}
 
-	const feedSource = await createFeedSource(values);
+	await createFeedSource(values);
 
 	return redirect(`/feed`);
 };

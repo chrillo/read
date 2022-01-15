@@ -5,20 +5,9 @@ import { FormActions } from '~/components/form/formActions';
 import { FormSubmit } from '~/components/form/formButton';
 import { FormCheckbox } from '~/components/form/formCheckbox';
 import { FormInput } from '~/components/form/formInput';
-import {
-	createFeedDelivery,
-	createFeedSource,
-	validateFeedUrl,
-} from '~/server/feed/feed.server';
+import { createFeedDelivery } from '~/server/feed/feed.server';
 import { formatDayOfWeek } from '~/utils/format';
-import { isString } from '~/utils/typeGuards';
-import {
-	getCheckbox,
-	getInt,
-	getString,
-	getStringArray,
-	getValues,
-} from '~/utils/validation';
+import { getCheckbox, getInt, getString, getStringArray } from '~/utils/validation';
 
 export const validateFeedDeliveryInput = async (formData: FormData) => {
 	console.log(formData);
@@ -105,7 +94,7 @@ export const action: ActionFunction = async ({ request }) => {
 		return json({ errors, values });
 	}
 
-	const feedSource = await createFeedDelivery(values);
+	await createFeedDelivery(values);
 
 	return redirect(`/delivery`);
 };

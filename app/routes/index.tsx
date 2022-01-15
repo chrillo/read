@@ -3,8 +3,8 @@ import { FeedList } from '~/components/feed/feedList';
 import { getFeedItemsWithCount } from '~/server/feed/feed.server';
 import { FeedListEmpty } from '~/components/feed/feedListEmpty';
 import { Page } from '~/components/app/page';
-import { FeedDelivery, FeedItem } from '@prisma/client';
-import { useCallback, useEffect, useState } from 'react';
+import { FeedItem } from '@prisma/client';
+import { useCallback, useState } from 'react';
 
 type LoaderData = {
 	items: FeedItem[];

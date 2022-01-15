@@ -1,4 +1,4 @@
-import { isBoolean, isString } from './typeGuards';
+import { isString } from './typeGuards';
 
 export const getValues = (formData: FormData) => {
 	const values = Object.fromEntries(formData);
