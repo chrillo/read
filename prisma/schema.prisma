@@ -33,15 +33,15 @@ model FeedSource {
 
 model FeedDelivery {
   id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  utcHour Int
+  hour Int
+  timeZone String
   activeDays Int[]
-  intervalHours Int
   lastDeliveredAt DateTime?
   active Boolean
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  @@index([utcHour,activeDays,active])
+  @@index([active])
 }
 
 model FeedItem {

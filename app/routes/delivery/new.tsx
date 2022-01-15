@@ -14,26 +14,27 @@ import { getCheckbox, getInt, getString, getStringArray, getValues } from "~/uti
 export const validateFeedDeliveryInput = async(formData:FormData)=>{
     console.log(formData)
     const active = getCheckbox(formData,'active')
-    const utcHour = getInt(formData,'utcHour')
-    const intervalHours = getInt(formData,'intervalHours')
+    const hour = getInt(formData,'hour')
     const activeDays = getStringArray(formData,'activeDays')
+    const timeZone = getString(formData,'timeZone')
 
     const errors = {} as Record<string,string>
-    if(utcHour < 0 || utcHour > 23) errors.utcHour = "Enter a value between 0 - 23"
-    if(intervalHours < 1) errors.intervalHours = "Enter a number greater than 1"
+    if(hour < 0 || hour > 23) errors.hour = "Enter a value between 0 - 23"
+    
 
     return {errors,values:{
-        utcHour,
-        intervalHours,
+        hour,
         active,
-        activeDays:activeDays.map(Number)
+        activeDays:activeDays.map(Number),
+        timeZone
     }}
 }
-
+// console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
+// https://github.com/dailydotdev/apps/blob/master/packages/shared/src/lib/timezones.ts
 export const FeedDeliveryForm = ({errors,defaultValues}:{errors?:{[key:string]:string},defaultValues?:Partial<FeedDelivery>})=>{
    return <Form method="post">
-    <p><FormInput name="utcHour" label="Hour:" defaultValue={defaultValues?.utcHour} error={errors?.title} /></p>
-    <p><FormInput name="intervalHours" label="Interval:" defaultValue={defaultValues?.intervalHours} error={errors?.url} /></p>
+    <p><FormInput name="hour" label="Hour:" defaultValue={defaultValues?.hour} error={errors?.hour} /></p>
+    <p><FormInput name="timeZone" label="Timezone:" defaultValue={defaultValues?.timeZone} error={errors?.timeZone} /></p>
     
     {[1,2,3,4,5,6,0].map((day)=>{
         return <p key={day}><FormCheckbox value={day+''} name="activeDays" label={formatDayOfWeek(day)} defaultValue={defaultValues?.activeDays?.includes(day)} /></p>

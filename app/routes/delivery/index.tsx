@@ -17,7 +17,7 @@ export default function FeedsList(){
         {data.map((delivery)=>{
             return <div key={delivery.id} className="feed-delivery">
                 <div className="feed-delivery-content">
-                    <Link to={`${delivery.id}`}>{delivery.active ? '' :'disabled: '} at {delivery.utcHour} every {delivery.intervalHours} hours on {delivery.activeDays.map(formatDayOfWeek).join(', ')}</Link>
+                    <Link to={`${delivery.id}`}>{delivery.active ? '' :'disabled: '} {delivery.hour}:00 on {delivery.activeDays.map(formatDayOfWeek).join(', ')}</Link>
                 </div>
                 <div className="feed-delivery-meta">
                     {delivery.lastDeliveredAt ? relativeTime(delivery.lastDeliveredAt) : '-' }

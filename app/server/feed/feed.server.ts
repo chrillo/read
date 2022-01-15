@@ -4,6 +4,12 @@ import RssParser from 'rss-parser';
 import { promiseMap } from "~/utils/promiseMap";
 import crypto from 'crypto'
 import { isString } from "~/utils/typeGuards";
+import { getUtcOffsetForTimezoneInMinutes } from "~/utils/timezone";
+import { zonedTimeToUtc } from "date-fns-tz";
+import { addDays } from "date-fns";
+
+const HOUR_IN_MS = 3600 * 1000
+const DAY_IN_MS = 24 * 3600 * 1000
 
 const getSHA256 = (input:object)=>{
     return crypto.createHash('sha256').update(JSON.stringify(input)).digest('hex')
@@ -41,10 +47,10 @@ export const getActiveFeedSources = async()=>{
 }
 
 
-export const createFeedDelivery = async({utcHour,intervalHours,active, activeDays}:{intervalHours:number, utcHour:number,active?:boolean,activeDays:number[]})=>{
+export const createFeedDelivery = async({hour,active, activeDays,timeZone}:{timeZone:string, hour:number,active?:boolean,activeDays:number[]})=>{
     return db.feedDelivery.create({data:{
-        utcHour,
-        intervalHours,
+        hour,
+        timeZone,
         active:active ? true : false,
         activeDays,
         lastDeliveredAt:null
@@ -110,35 +116,59 @@ const getFeedParser = ()=>{
     });
 }
 
-export const deliverItems = async()=>{
-    const now = new Date()
-    const utcHour = now.getUTCHours() 
-    const day = now.getDay()
-    console.log('utc hour',utcHour,day)
-    const deliveries = await db.feedDelivery.findMany({where:{utcHour,activeDays:{has:day},active:true}}) 
-    console.log('potential deliveries',deliveries.length)
-    const deliveriesToBeMade = deliveries.filter((delivery)=>{
+export const getNextDelivery = (delivery:FeedDelivery,now:Date):Date=>{
 
-        if(!delivery.lastDeliveredAt) return true
+    const {hour,timeZone,lastDeliveredAt,activeDays} = delivery
+
+    const date = lastDeliveredAt ? lastDeliveredAt : new Date()
+    date.setHours(hour)
+    date.setSeconds(0)
+    date.setMilliseconds(0)
+    date.setMinutes(0)
+    let nextDelivery = zonedTimeToUtc(date, timeZone)
+
+    if(nextDelivery < now){
+        nextDelivery = addDays(nextDelivery,1);
+    }
+    let day = nextDelivery.getDay()
+    if(activeDays.length){
+        while(!activeDays.includes(day)){
+            nextDelivery = addDays(nextDelivery,1);
+            day = nextDelivery.getDay()
+        }
+    }
+    console.log('next delivery',date,nextDelivery)
+    return nextDelivery
+
+}
+
+export const deliverItems = async()=>{
+    const deliveriesToBeMade = await getDeliveriesToBeMade()
+    return await runDeliveries(deliveriesToBeMade)
+}
+export const getDeliveriesToBeMade = async()=>{
+    const deliveries = await db.feedDelivery.findMany({where:{active:true}}) 
+    const now = new Date()
+    const currentUtcHour = now.getUTCHours()
+    const currentUtcDay = now.getUTCDay()
+    return deliveries.filter((delivery)=>{
         // TODO: handle timezones here
-        const ts = now.getTime()
-        const threshold = new Date((ts - (ts % 3600000)) - delivery.intervalHours * 3600000)
-        const lastDeliveryTs = delivery.lastDeliveredAt.getTime()
-        const lastDelivery = new Date((lastDeliveryTs- (lastDeliveryTs % 3600000)))
-        
-        console.log('check delivery',lastDelivery,threshold)
-        // we only want to run deliveries which were delivered at least their interval ago
-        return lastDelivery <= threshold
+        const nextDelivery = getNextDelivery(delivery,now)
+        if(nextDelivery.getUTCDay() !== currentUtcDay ) return false
+        if(nextDelivery.getUTCHours() !== currentUtcHour) return false
+        return true
     })
-    console.log('deliveries to be made',deliveriesToBeMade.length)
-    return await promiseMap(deliveriesToBeMade, async(delivery)=>{
+}
+export const runDeliveries = async(deliveries:FeedDelivery[])=>{
+    console.log('run deliveries',deliveries.length)
+    return await promiseMap(deliveries, async(delivery)=>{
         // TODO: scoping of deliveries
         console.log('run delivery',delivery)
         const [items, updatedDelivery] = await db.$transaction([
             db.feedItem.updateMany({where:{delivered:false},data:{delivered:true}}),
             db.feedDelivery.update({where:{id:delivery.id}, data:{lastDeliveredAt:new Date()}}),
         ])
-        console.log('updated items',items)
+        console.log('delivered items',items)
         return updatedDelivery
     },{concurrency:1})
 }
