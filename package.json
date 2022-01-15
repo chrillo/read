@@ -8,6 +8,7 @@
     "dev": "remix dev",
     "postinstall": "remix setup node",
     "start": "remix-serve build",
+    "lint":"eslint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky install"
   },
