@@ -170,7 +170,6 @@ a.active{
 
 .feed-source{
     padding:0.25rem 0 1rem 0;
-    
     border-bottom:1px solid var(--border);
 }
 .feed-source-content{
@@ -178,6 +177,19 @@ a.active{
     justify-content: space-between;
 }
 .feed-source-meta{
+    color:var(--meta);
+    font-size:0.8rem;
+}
+
+.feed-delivery{
+    padding:0.25rem 0 1rem 0;
+    border-bottom:1px solid var(--border);
+}
+.feed-delivery-content{
+    display: flex;
+    justify-content: space-between;
+}
+.feed-delivery-meta{
     color:var(--meta);
     font-size:0.8rem;
 }

@@ -1,7 +1,9 @@
 import { FeedDelivery } from "@prisma/client"
+import { format } from "date-fns"
 import { Link, useLoaderData } from "remix"
 import { Page, PageActions } from "~/components/app/page"
 import { getFeedDeliveries } from "~/server/feed/feed.server"
+import { getNextDelivery } from "~/utils/feedDelivery"
 import { formatDayOfWeek } from "~/utils/format"
 import { relativeTime } from "~/utils/relativeTime"
 
@@ -20,7 +22,8 @@ export default function FeedsList(){
                     <Link to={`${delivery.id}`}>{delivery.active ? '' :'disabled: '} {delivery.hour}:00 on {delivery.activeDays.map(formatDayOfWeek).join(', ')}</Link>
                 </div>
                 <div className="feed-delivery-meta">
-                    {delivery.lastDeliveredAt ? relativeTime(delivery.lastDeliveredAt) : '-' }
+                    <span>Last: {delivery.lastDeliveredAt ? relativeTime(delivery.lastDeliveredAt) : ' - ' }</span>
+                    {delivery.active ? <span>Next: {format(getNextDelivery(delivery),'HH:mm dd.MM.yyyy')}</span> : 'disabled'}
                 </div>              
             </div>
         })}

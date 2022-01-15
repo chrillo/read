@@ -1,7 +1,6 @@
 import { ActionFunction, json, LoaderFunction, redirect, useActionData, useLoaderData } from "remix"
 import { Page } from "~/components/app/page"
-import { getFeedDelivery, getFeedSource, updateFeedDelivery, updateFeedSource } from "~/server/feed/feed.server"
-import { FeedSourceForm } from "../feed/new"
+import { getFeedDelivery, updateFeedDelivery} from "~/server/feed/feed.server"
 import { FeedDeliveryForm, validateFeedDeliveryInput } from "./new"
 
 
@@ -11,7 +10,6 @@ export const action:ActionFunction = async({request,params})=>{
     const formData  = await request.formData()
     const {values,errors} = await validateFeedDeliveryInput(formData)
 
-    console.log('update action',values, errors)
     if(Object.keys(errors).length){
         return json({errors,values})
     }

@@ -3,10 +3,8 @@ import { db } from "../db.server";
 import RssParser from 'rss-parser';
 import { promiseMap } from "~/utils/promiseMap";
 import crypto from 'crypto'
-import { isString } from "~/utils/typeGuards";
-import { getUtcOffsetForTimezoneInMinutes } from "~/utils/timezone";
-import { zonedTimeToUtc } from "date-fns-tz";
-import { addDays } from "date-fns";
+import { isString } from "~/utils/typeGuards"
+import { getNextDelivery } from "~/utils/feedDelivery";
 
 const HOUR_IN_MS = 3600 * 1000
 const DAY_IN_MS = 24 * 3600 * 1000
@@ -116,29 +114,7 @@ const getFeedParser = ()=>{
     });
 }
 
-export const getNextDelivery = (delivery:FeedDelivery,now:Date):Date=>{
 
-    const {hour,timeZone,lastDeliveredAt,activeDays} = delivery
-
-    const date = lastDeliveredAt ? lastDeliveredAt : new Date()
-    date.setHours(hour)
-    date.setSeconds(0)
-    date.setMilliseconds(0)
-    date.setMinutes(0)
-    let nextDelivery = zonedTimeToUtc(date, timeZone)
-
-    if(nextDelivery < now){
-        nextDelivery = addDays(nextDelivery,1);
-    }
-    let day = nextDelivery.getDay()
-    if(activeDays.length){
-        while(!activeDays.includes(day)){
-            nextDelivery = addDays(nextDelivery,1);
-            day = nextDelivery.getDay()
-        }
-    }
-    return nextDelivery
-}
 
 export const deliverItems = async()=>{
     const deliveriesToBeMade = await getDeliveriesToBeMade()
