@@ -137,9 +137,7 @@ export const getNextDelivery = (delivery:FeedDelivery,now:Date):Date=>{
             day = nextDelivery.getDay()
         }
     }
-    console.log('next delivery',date,nextDelivery)
     return nextDelivery
-
 }
 
 export const deliverItems = async()=>{
