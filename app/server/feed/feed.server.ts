@@ -148,6 +148,16 @@ export const getDeliveriesToBeMade = async () => {
 	return deliveries.filter((delivery) => {
 		// TODO: handle timezones here
 		const nextDelivery = getNextDelivery(delivery, now);
+		console.log(
+			'next',
+			nextDelivery.toISOString(),
+			'delivery',
+			delivery.hour,
+			delivery.activeDays,
+			'utc',
+			currentUtcHour,
+			currentUtcDay,
+		);
 		if (nextDelivery.getUTCDay() !== currentUtcDay) return false;
 		if (nextDelivery.getUTCHours() !== currentUtcHour) return false;
 		return true;
