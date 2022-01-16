@@ -2,10 +2,18 @@ import { FeedDelivery } from '@prisma/client';
 import { addDays } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
 
-export const getNextDelivery = (delivery: FeedDelivery, now: Date = new Date()): Date => {
+export const getNextDelivery = (
+	delivery: FeedDelivery,
+	nowValue: Date = new Date(),
+): Date => {
 	const { hour, timeZone, lastDeliveredAt, activeDays } = delivery;
 
-	const date = new Date();
+	const currentHour = new Date(nowValue);
+	currentHour.setMinutes(0);
+	currentHour.setSeconds(0);
+	currentHour.setMilliseconds(0);
+
+	const date = lastDeliveredAt ? new Date(lastDeliveredAt) : new Date();
 	date.setHours(hour);
 	date.setSeconds(0);
 	date.setMilliseconds(0);
@@ -13,18 +21,14 @@ export const getNextDelivery = (delivery: FeedDelivery, now: Date = new Date()):
 
 	let nextDelivery = zonedTimeToUtc(date, timeZone);
 
-	if (lastDeliveredAt && nextDelivery < lastDeliveredAt) {
-		nextDelivery = addDays(nextDelivery, 1);
-	}
-
-	if (nextDelivery < now) {
-		nextDelivery = addDays(nextDelivery, 1);
-	}
 	let day = nextDelivery.getDay();
+
 	if (activeDays.length) {
-		while (!activeDays.includes(day)) {
+		while (!activeDays.includes(day) || nextDelivery < currentHour) {
+			console.log(nextDelivery, currentHour);
 			nextDelivery = addDays(nextDelivery, 1);
 			day = nextDelivery.getDay();
+			console.log('active days', activeDays, day);
 		}
 	}
 	return nextDelivery;
