@@ -27,14 +27,19 @@ export const FeedListItem = ({
 	return (
 		<div className="feed-item" key={item.id}>
 			<div className="feed-item-content">
-				<a className="title" target="_blank" href={item.url}>
+				<a className="title" target="_blank" href={item.url} rel="noreferrer">
 					{item.title}
 				</a>
 				<div className="feed-item-meta">
 					<span className="source">{getDomain(item.url)}</span>
 					<span className="time">{relativeTime(item.createdAt)}</span>
 					{item.commentsUrl ? (
-						<a className="comments" target="_blank" href={item.commentsUrl}>
+						<a
+							className="comments"
+							target="_blank"
+							href={item.commentsUrl}
+							rel="noreferrer"
+						>
 							Comments
 						</a>
 					) : null}
