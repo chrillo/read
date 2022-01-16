@@ -19,16 +19,19 @@ export const getNextDelivery = (
 	date.setMilliseconds(0);
 	date.setMinutes(0);
 
-	let nextDelivery = zonedTimeToUtc(date, timeZone);
-
+	const lastDeliveredAtUtc = zonedTimeToUtc(date, timeZone);
+	let nextDelivery = lastDeliveredAtUtc;
+	if (lastDeliveredAtUtc.getTime() === currentHour.getTime()) {
+		nextDelivery = addDays(nextDelivery, 1);
+	}
 	let day = nextDelivery.getDay();
 
 	if (activeDays.length) {
 		while (!activeDays.includes(day) || nextDelivery < currentHour) {
-			console.log(nextDelivery, currentHour);
+			//console.log(nextDelivery, currentHour);
 			nextDelivery = addDays(nextDelivery, 1);
 			day = nextDelivery.getDay();
-			console.log('active days', activeDays, day);
+			//console.log('active days', activeDays, day);
 		}
 	}
 	return nextDelivery;
