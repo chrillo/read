@@ -93,6 +93,18 @@ export const syncFeeds = async () => {
 	};
 };
 
+export const markAllRead = async () => {
+	return db.feedItem.updateMany({
+		where: {
+			read: false,
+			delivered: true,
+		},
+		data: {
+			read: true,
+		},
+	});
+};
+
 export const updateFeedItem = async (id: string, data: Partial<FeedItem>) => {
 	return db.feedItem.update({
 		where: {
