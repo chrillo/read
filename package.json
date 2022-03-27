@@ -10,7 +10,8 @@
     "start": "remix-serve build",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "studio":"npx prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^3.9.2",
