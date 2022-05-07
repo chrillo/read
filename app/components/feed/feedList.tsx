@@ -1,34 +1,77 @@
 import { FeedItem } from '@prisma/client';
+import { useState } from 'react';
+import { FeedItemGroup } from '~/routes';
+
+import { formatDate, formatDayOfWeek } from '~/utils/format';
 import { FeedListItem } from './feedListItem';
 
-export const FeedList = ({
-	items,
-	markAsRead,
+const GroupHeader = ({
+	date,
+	unreadCount,
+	markDateAsRead,
+	onToggleOpen,
 }: {
-	items: FeedItem[];
-	markAsRead: (item: FeedItem) => Promise<FeedItem>;
+	date: Date;
+	unreadCount: number;
+	markDateAsRead: () => Promise<FeedItem[]>;
+	onToggleOpen: () => void;
 }) => {
-	const onNext = async () => {
-		const nextItem = items.find((item) => !item.read);
-		if (nextItem) {
-			await markAsRead(nextItem);
-		}
-	};
+	const displayDate =
+		formatDayOfWeek(date.getDay()) + ' ' + formatDate(date, 'dd.MM.yyyy');
 
 	return (
-		<div className="feed-item-list">
-			<div className="feed-actions">
-				<span className="feed-item-next">
-					<button onClick={onNext} className="button">
-						next
-					</button>
-				</span>
-			</div>
-			<div className="feed-items">
-				{items.map((item) => {
-					return <FeedListItem markAsRead={markAsRead} item={item} key={item.id} />;
-				})}
-			</div>
+		<div className="feed-group-header" onClick={onToggleOpen}>
+			<span>
+				{displayDate} <span className="feed-group-unread-count">{unreadCount}</span>
+			</span>
+			<button
+				onClick={(event) => {
+					event.stopPropagation();
+					markDateAsRead();
+				}}
+				className="button"
+			>
+				Read
+			</button>
+		</div>
+	);
+};
+
+export const FeedList = ({
+	group,
+	markItemsAsRead,
+}: {
+	group: FeedItemGroup;
+	markItemsAsRead: (items: FeedItem[]) => Promise<FeedItem[]>;
+}) => {
+	const { items, date, unreadCount } = group;
+	const [open, setOpen] = useState(false);
+
+	return (
+		<div className={`feed-item-list ${open ? 'open' : ''}`}>
+			<GroupHeader
+				onToggleOpen={() => setOpen(!open)}
+				date={date}
+				unreadCount={unreadCount}
+				markDateAsRead={() => markItemsAsRead(items)}
+			/>
+			{open ? (
+				<div className="feed-items">
+					{items.map((item) => {
+						return (
+							<FeedListItem markItemsAsRead={markItemsAsRead} item={item} key={item.id} />
+						);
+					})}
+				</div>
+			) : null}
+			{open && unreadCount > 0 ? (
+				<GroupHeader
+					onToggleOpen={() => setOpen(!open)}
+					date={date}
+					unreadCount={unreadCount}
+					markDateAsRead={() => markItemsAsRead(items)}
+				/>
+			) : null}
 		</div>
 	);
 };

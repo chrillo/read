@@ -105,26 +105,20 @@ export const markAllRead = async () => {
 	});
 };
 
-export const updateFeedItem = async (id: string, data: Partial<FeedItem>) => {
-	return db.feedItem.update({
+export const updateFeedItems = async (ids: string[], data: Partial<FeedItem>) => {
+	return db.feedItem.updateMany({
 		where: {
-			id,
+			id: { in: ids },
 		},
 		data,
 	});
 };
-export const getFeedItemsWithCount = async () => {
-	const [items, count] = await Promise.all([
-		db.feedItem.findMany({
-			orderBy: { createdAt: 'desc' },
-			where: { read: false, delivered: true },
-		}),
-		db.feedItem.count({
-			orderBy: { createdAt: 'desc' },
-			where: { read: false, delivered: true },
-		}),
-	]);
-	return { items, count };
+export const getFeedItems = async () => {
+	const items = await db.feedItem.findMany({
+		orderBy: { createdAt: 'desc' },
+		where: { read: false, delivered: true },
+	});
+	return { items };
 };
 
 const getGuid = (remoteItem: { id: string } & RssParser.Item) => {

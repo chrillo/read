@@ -1,5 +1,6 @@
 import { FeedItem } from '@prisma/client';
 import { useCallback, useState } from 'react';
+import { formatDate } from '~/utils/format';
 import { relativeTime } from '~/utils/relativeTime';
 
 const getDomain = (link?: string) => {
@@ -9,18 +10,18 @@ const getDomain = (link?: string) => {
 
 export const FeedListItem = ({
 	item,
-	markAsRead,
+	markItemsAsRead,
 }: {
 	item: FeedItem;
-	markAsRead: (item: FeedItem) => Promise<FeedItem>;
+	markItemsAsRead: (items: FeedItem[]) => Promise<FeedItem[]>;
 }) => {
 	const [submission, setSubmission] = useState(false);
 
 	const onMarkAsRead = useCallback(async () => {
 		setSubmission(true);
-		await markAsRead(item);
+		await markItemsAsRead([item]);
 		setSubmission(false);
-	}, [item, markAsRead]);
+	}, [item, markItemsAsRead]);
 
 	if (item.read) return null;
 
@@ -32,7 +33,9 @@ export const FeedListItem = ({
 				</a>
 				<div className="feed-item-meta">
 					<span className="source">{getDomain(item.url)}</span>
-					<span className="time">{relativeTime(item.createdAt)}</span>
+					<span className="time" title={formatDate(item.createdAt, 'dd.MM.yyyy HH:ii')}>
+						{relativeTime(item.createdAt)}
+					</span>
 					{item.commentsUrl ? (
 						<a
 							className="comments"

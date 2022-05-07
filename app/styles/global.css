@@ -10,6 +10,7 @@
 	:root {
 		--text: #c9d1d9;
 		--meta: #8c949e;
+		--background-light: rgba(13, 17, 22, 1);
 		--background: #020408;
 		--border: #30363d;
 		--error: #900;
@@ -130,9 +131,30 @@ a.active {
 	font-size: 3rem;
 	font-weight: bold;
 }
+.feed-item-list {
+	margin-top: 2rem;
+}
+.feed-group-header {
+	color: var(--text);
+	background-color: var(--background);
+	font-weight: bold;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	padding: 0.5rem 0.5rem;
+	border-top: 1px solid var(--border);
+}
+.feed-item-list.open .feed-group-header {
+	background-color: var(--background-light);
+}
+.feed-group-unread-count {
+	font-weight: 300;
+}
 .feed-item {
 	padding: 0.25rem 0 0.25rem 0;
 	margin-bottom: 0.5rem;
+
 	display: flex;
 	justify-content: space-between;
 	border-top: 1px solid var(--border);
