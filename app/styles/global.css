@@ -1,12 +1,12 @@
 :root {
-	--text: #000;
+	--text: #202124;
 	--meta: #999;
 	--background: #fff;
 	--border: #ddd;
 	--error: #900;
 	--border-dark: #333;
 }
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
 	:root {
 		--text: #c9d1d9;
 		--meta: #8c949e;
@@ -16,12 +16,14 @@
 		--error: #900;
 		--border-dark: #666;
 	}
-}
+} */
 
 * {
 	font-family: system-ui, sans-serif;
 	margin: 0;
 	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
 }
 html,
 body {
@@ -163,6 +165,7 @@ a.active {
 }
 .feed-item .title {
 	flex: 1;
+	font-weight: 500;
 }
 .feed-item a:visited {
 	color: var(--meta);

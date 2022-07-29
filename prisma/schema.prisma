@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["mongoDb","extendedIndexes"]
+  previewFeatures = ["extendedIndexes"]
 }
 
 datasource db {
@@ -12,14 +12,14 @@ datasource db {
 }
 
 model User {
-  id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   email String  @unique
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
 
 model FeedSource {
-  id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   title  String  
   url   String
   type  String
@@ -32,7 +32,7 @@ model FeedSource {
 }
 
 model FeedDelivery {
-  id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   hour Int
   timeZone String
   activeDays Int[]
@@ -45,8 +45,8 @@ model FeedDelivery {
 }
 
 model FeedItem {
-  id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  guid  String  @unique
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  guid  String 
   title  String
   content String
   url   String
