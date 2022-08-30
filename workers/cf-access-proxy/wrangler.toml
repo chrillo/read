@@ -1,12 +1,11 @@
-name = "read-christophpeter-at"
+name = "read-chrillo-at"
 type = "webpack"
-routes = ['https://read.christophpeter.at/*']
-zone_id = '70d59b088bb39853667c66a4aa31b3cc'
+routes = ['https://read.chrillo.at/*']
 account_id = '81b00e19169f6ab622f40d0f27bb123f'
-usage_model = ''
 compatibility_flags = []
 workers_dev = false
 compatibility_date = "2021-12-30"
+main = "index.js"
 
 [[kv_namespaces]]
 binding = "CACHE"
