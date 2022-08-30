@@ -1,4 +1,4 @@
-import { ActionFunction, json } from 'remix';
+import { ActionFunction, json } from '@remix-run/node';
 import { updateFeedItems } from '~/server/feed/feed.server';
 
 export const action: ActionFunction = async ({ request, params }) => {

@@ -1,4 +1,4 @@
-import { json } from 'remix';
+import { json } from '@remix-run/node';
 import { deliverItems, syncFeeds } from '~/server/feed/feed.server';
 
 export async function loader() {

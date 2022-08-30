@@ -6,16 +6,16 @@
   "scripts": {
     "build": "remix build",
     "dev": "remix dev",
-    "postinstall": "remix setup node",
     "start": "remix-serve build",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky install",
-    "studio":"npx prisma studio"
+    "studio": "npx prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^4.2.1",
     "@remix-run/express": "^1.7.0",
+    "@remix-run/node": "^1.7.0",
     "@remix-run/react": "^1.7.0",
     "@remix-run/serve": "^1.7.0",
     "date-fns": "^2.29.2",
@@ -23,7 +23,6 @@
     "prisma": "^4.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "remix": "^1.7.0",
     "rss-parser": "^3.12.0"
   },
   "devDependencies": {

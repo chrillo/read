@@ -1,4 +1,5 @@
-import { LoaderFunction, useLoaderData } from 'remix';
+import { LoaderFunction } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 import { FeedList } from '~/components/feed/feedList';
 import { getFeedItems } from '~/server/feed/feed.server';
 import { FeedListEmpty } from '~/components/feed/feedListEmpty';

@@ -1,6 +1,6 @@
 import { FeedDelivery } from '@prisma/client';
 import { format } from 'date-fns';
-import { Link, useLoaderData } from 'remix';
+import { Link, useLoaderData } from '@remix-run/react';
 import { Page, PageActions } from '~/components/app/page';
 import { getFeedDeliveries } from '~/server/feed/feed.server';
 import { getNextDelivery } from '~/utils/feedDelivery';

@@ -1,4 +1,4 @@
-import type { LoaderFunction } from 'remix';
+import type { LoaderFunction } from '@remix-run/node';
 import { getFrontPageItems } from '~/server/feed/hackernews.server';
 
 function escapeCdata(s: string = '') {

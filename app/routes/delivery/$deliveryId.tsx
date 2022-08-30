@@ -1,11 +1,5 @@
-import {
-	ActionFunction,
-	json,
-	LoaderFunction,
-	redirect,
-	useActionData,
-	useLoaderData,
-} from 'remix';
+import { ActionFunction, json, LoaderFunction, redirect } from '@remix-run/node';
+import { useActionData, useLoaderData } from '@remix-run/react';
 import { Page } from '~/components/app/page';
 import { getFeedDelivery, updateFeedDelivery } from '~/server/feed/feed.server';
 import { FeedDeliveryForm, validateFeedDeliveryInput } from './new';
