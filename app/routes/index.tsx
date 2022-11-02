@@ -10,6 +10,7 @@ import { formatDate } from '~/utils/format';
 
 type LoaderData = {
 	items: FeedItem[];
+	domain: string;
 };
 
 export type FeedItemGroup = {
@@ -18,8 +19,19 @@ export type FeedItemGroup = {
 	date: Date;
 };
 
-export const loader: LoaderFunction = async (): Promise<LoaderData> => {
-	return getFeedItems();
+export const loader: LoaderFunction = async ({
+	request,
+	params,
+}): Promise<LoaderData> => {
+	const host = request.headers.get('X-Forwarded-Host') ?? request.headers.get('host');
+	if (!host) {
+		throw new Error('Could not determine domain URL.');
+	}
+	const protocol = host.includes('localhost') ? 'http' : 'https';
+	const domain = `${protocol}://${host}`;
+	const { items } = await getFeedItems();
+	console.log('domain', domain);
+	return { items, domain };
 };
 
 const itemsToGroups = (
@@ -54,7 +66,7 @@ const itemsToGroups = (
 };
 
 const useFeedItems = () => {
-	const { items: allItems } = useLoaderData<LoaderData>();
+	const { items: allItems, domain } = useLoaderData<LoaderData>();
 	const [items, setItems] = useState<FeedItem[]>(allItems);
 
 	const { groups, unreadCount } = useMemo(() => {
@@ -95,17 +107,18 @@ const useFeedItems = () => {
 		[updateItems],
 	);
 
-	return { items, groups, unreadCount, markItemsAsRead };
+	return { items, groups, unreadCount, markItemsAsRead, domain };
 };
 
 export default function Index() {
-	const { groups, unreadCount, markItemsAsRead } = useFeedItems();
+	const { groups, unreadCount, markItemsAsRead, domain } = useFeedItems();
 
 	return (
 		<Page>
 			{unreadCount > 0 && groups.length > 0 ? (
 				groups.map((group) => (
 					<FeedList
+						domain={domain}
 						key={group.date.toDateString()}
 						group={group}
 						markItemsAsRead={markItemsAsRead}

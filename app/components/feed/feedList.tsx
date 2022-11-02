@@ -39,9 +39,11 @@ const GroupHeader = ({
 
 export const FeedList = ({
 	group,
+	domain,
 	markItemsAsRead,
 }: {
 	group: FeedItemGroup;
+	domain: string;
 	markItemsAsRead: (items: FeedItem[]) => Promise<FeedItem[]>;
 }) => {
 	const { items, date, unreadCount } = group;
@@ -59,7 +61,12 @@ export const FeedList = ({
 				<div className="feed-items">
 					{items.map((item) => {
 						return (
-							<FeedListItem markItemsAsRead={markItemsAsRead} item={item} key={item.id} />
+							<FeedListItem
+								domain={domain}
+								markItemsAsRead={markItemsAsRead}
+								item={item}
+								key={item.id}
+							/>
 						);
 					})}
 				</div>
