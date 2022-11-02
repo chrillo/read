@@ -48,11 +48,11 @@ export const FeedListItem = ({
 					) : null}
 				</div>
 			</div>
-			<div className="feed-item-actions">
+			{/* <div className="feed-item-actions">
 				<button disabled={submission} className="button" onClick={onMarkAsRead}>
 					Read
 				</button>
-			</div>
+			</div> */}
 		</div>
 	);
 };

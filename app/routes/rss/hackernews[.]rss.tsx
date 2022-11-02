@@ -29,6 +29,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const domain = `${protocol}://${host}`;
 	const publicUrl = `${domain}/feeds/hackernews.rss`;
 
+	const proxyUrl = (url: string) => {
+		return url.replace('https://news.ycombinator.com/', `${domain}/proxy/hackernews/`);
+	};
+
 	const rssString = `
     <rss xmlns:blogChannel="${publicUrl}" version="2.0">
       <channel>
@@ -46,9 +50,15 @@ export const loader: LoaderFunction = async ({ request }) => {
               <description><![CDATA[${escapeHtml(item.content)}]]></description>
               <author><![CDATA[${escapeCdata(item.author || '')}]]></author>
               <pubDate>${item.createdAt.toUTCString()}</pubDate>
-              ${item.commentsUrl ? `<hn:comments>${item.commentsUrl}</hn:comments>` : ''}
-              <link>${item.url ? escapeHtml(item.url) : item.guid}</link>
-              <guid>${item.guid}</guid>
+              ${
+								item.commentsUrl
+									? `<hn:comments>${proxyUrl(item.commentsUrl)}</hn:comments>`
+									: ''
+							}
+              <link>${
+								item.url ? escapeHtml(proxyUrl(item.url)) : proxyUrl(item.guid)
+							}</link>
+              <guid>${proxyUrl(item.guid)}</guid>
             </item>
           `.trim(),
 					)
