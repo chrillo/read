@@ -9,25 +9,25 @@ const getDomain = (link?: string) => {
 };
 
 const proxyDomain = (url: string, domain: string) => {
-	return url.replace('https://news.ycombinator.com', `${domain}/proxy/hackernews/`);
+	return url.replace('https://news.ycombinator.com', `${domain}/proxy/hackernews`);
 };
 
 export const FeedListItem = ({
 	item,
 	domain,
-	markItemsAsRead,
-}: {
+}: //markItemsAsRead,
+{
 	item: FeedItem;
 	domain: string;
 	markItemsAsRead: (items: FeedItem[]) => Promise<FeedItem[]>;
 }) => {
 	const [submission, setSubmission] = useState(false);
 
-	const onMarkAsRead = useCallback(async () => {
-		setSubmission(true);
-		await markItemsAsRead([item]);
-		setSubmission(false);
-	}, [item, markItemsAsRead]);
+	// const onMarkAsRead = useCallback(async () => {
+	// 	setSubmission(true);
+	// 	await markItemsAsRead([item]);
+	// 	setSubmission(false);
+	// }, [item, markItemsAsRead]);
 
 	if (item.read) return null;
 
