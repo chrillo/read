@@ -6,7 +6,7 @@
 	--error: #900;
 	--border-dark: #333;
 }
-/* @media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
 	:root {
 		--text: #c9d1d9;
 		--meta: #8c949e;
@@ -16,7 +16,7 @@
 		--error: #900;
 		--border-dark: #666;
 	}
-} */
+}
 
 * {
 	font-family: system-ui, sans-serif;
@@ -135,6 +135,16 @@ a.active {
 }
 .feed-item-list {
 	margin-top: 2rem;
+}
+.feed-item-list.open .feed-items,
+.feed-item-list.open .feed-group-header {
+	border-left: 1px solid var(--border);
+}
+.feed-item-list.open .feed-item:last-child {
+	margin-bottom: 0;
+}
+.feed-item-list.open .feed-group-header:last-child {
+	border-bottom: 1px solid var(--border);
 }
 .feed-group-header {
 	color: var(--text);
