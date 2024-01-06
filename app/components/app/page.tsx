@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { Navigation } from '../nav/navigation';
 
 export const Page: FC = ({ children }) => {
