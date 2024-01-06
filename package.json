@@ -13,7 +13,7 @@
     "studio": "npx prisma studio"
   },
   "dependencies": {
-    "@prisma/client": "^4.2.1",
+    "@prisma/client": "^5.7.1",
     "@remix-run/express": "^1.7.0",
     "@remix-run/node": "^1.7.0",
     "@remix-run/react": "^1.7.0",
